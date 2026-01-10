@@ -36,23 +36,25 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT */
+        /* GRID LAYOUT - 3 Rows */
         .grid-container {
             display: grid;
-            grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header | Middle | Bottom Calendar */
-            grid-template-rows: 18vh 1fr 25vh;
+            /* Middle Row Columns: Equal width for Routine, Subjects, Weather */
+            grid-template-columns: 1fr 1fr 1fr; 
+            /* Rows: Header (20vh) | Middle (Auto) | Footer (25vh) */
+            grid-template-rows: 20vh 1fr 25vh;
             gap: 2vh; 
             height: 100%;
             width: 100%;
         }
 
-        /* HEADER */
+        /* HEADER - Now 4 Columns */
         .header-row {
             grid-column: 1 / -1; 
             grid-row: 1;
             display: grid;
-            grid-template-columns: 25fr 25fr 50fr; 
+            /* Time | Countdown | Uniform | Currency */
+            grid-template-columns: 1fr 1fr 1fr 1fr; 
             gap: 2vh;
         }
 
@@ -69,51 +71,30 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
 
-        /* --- WEATHER WIDGET ZOOM FIX (UPDATED) --- */
-        .weather-box { 
-            padding: 0; 
-            overflow: hidden; 
-            background: rgba(0, 0, 0, 0.35); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        /* HEADER SPECIFIC BOX ALIGNMENTS */
+        .time-box { justify-content: center; align-items: center; }
+        .countdown-box { justify-content: center; align-items: center; text-align: center; }
+        .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.55); }
+        .currency-box { justify-content: center; align-items: center; text-align: center; }
 
-        .weather-box iframe {
-            /* Massive Zoom: 1.75x */
-            transform: scale(1.75);
-            transform-origin: center center;
-            
-            /* Math to keep it centered: 100% / 1.75 = ~57% */
-            width: 57%; 
-            height: 57%;
-            border: none;
-        }
-
-        /* MIDDLE ROW */
+        /* MIDDLE ROW LAYOUT */
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        .right-column-stack {
-            grid-column: 3;
+        /* Weather now takes the 3rd spot in Middle Row */
+        .weather-box { 
+            grid-column: 3; 
             grid-row: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 2vh;
+            padding: 0; 
+            overflow: hidden; 
+            background: rgba(0, 0, 0, 0.35); 
         }
 
-        .uniform-box {
-            flex: 1; 
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: rgba(40, 50, 60, 0.55); 
-        }
-
-        .currency-box { 
-            flex: 1; 
-            justify-content: center; 
-            text-align: center;
+        .weather-box iframe {
+            width: 100%; 
+            height: 100%;
+            border: none;
+            display: block;
         }
 
         /* CALENDAR STYLING (Dynamic) */
@@ -159,33 +140,33 @@
         .event-time { font-size: 1.8vh; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
         .event-title { font-size: 2.2vh; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         
-        /* Calendar Categories (Colors) */
-        .tag-sport { border-left-color: #f44336; }  /* Red */
-        .tag-tutor { border-left-color: #2196f3; }  /* Blue */
-        .tag-family { border-left-color: #ff9800; } /* Orange */
-        .tag-other { border-left-color: #9e9e9e; }  /* Grey */
+        .tag-sport { border-left-color: #f44336; }  
+        .tag-tutor { border-left-color: #2196f3; }  
+        .tag-family { border-left-color: #ff9800; } 
+        .tag-other { border-left-color: #9e9e9e; }  
 
         /* Typography */
         h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        #clock { font-size: 11vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
-        #date { font-size: 3vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #clock { font-size: 10vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        #date { font-size: 2.5vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         
-        #countdown { font-size: 8vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
-        .sub-text { font-size: 2.2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #countdown { font-size: 7vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
+        .sub-text { font-size: 2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
-        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2.2vh; margin-bottom: 5px; color: #aaa;}
-        #yen-rate { font-size: 7vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
+        /* Adjusted sizes for the new Header positions */
+        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2vh; margin-bottom: 0; color: #aaa;}
+        #yen-rate { font-size: 6vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 0; }
         
-        #todays-uniform { font-size: 4vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
-        .uniform-icon { font-size: 7vh; margin-bottom: 5px; display: block; }
+        #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
+        .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
         
-        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1vh;}
-        li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2.5vh; flex-grow: 1;}
+        li { font-size: 3.2vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
         li:last-child { border-bottom: none; }
 
-        .icon { width: 4vh; display: inline-block; text-align: center; margin-right: 1vw; }
+        .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
         .daily-chore { color: #ffd700; font-weight: bold; }
 
     </style>
@@ -195,18 +176,30 @@
 <div class="grid-container">
     
     <div class="header-row">
+        
         <div class="box time-box">
             <div id="clock">--:--</div>
             <div id="date">Loading...</div>
         </div>
+        
         <div class="box countdown-box">
             <h2 style="border:none; margin:0;">Japan Trip 🇯🇵</h2>
             <div class="big-text" id="countdown">0</div>
             <div class="sub-text">Days</div>
         </div>
-        <div class="box weather-box">
-            <iframe src="https://indify.co/widgets/live/weather/i8i3fJozkeFtfq5lWVl6"></iframe>
+        
+        <div class="box uniform-box">
+            <h2>Wear Today</h2>
+            <span class="uniform-icon" id="uniform-icon">👔</span>
+            <div id="todays-uniform">Loading...</div>
         </div>
+
+        <div class="box currency-box">
+            <h2>AUD to JPY</h2>
+            <div class="big-text" id="yen-rate">...</div>
+            <div class="sub-text">1 AUD = ¥<span id="exact-rate">...</span></div>
+        </div>
+
     </div>
 
     <div class="box routine-box">
@@ -227,17 +220,8 @@
         </ul>
     </div>
 
-    <div class="right-column-stack">
-        <div class="box uniform-box">
-            <h2>Wear Today</h2>
-            <span class="uniform-icon" id="uniform-icon">👔</span>
-            <div id="todays-uniform">Loading...</div>
-        </div>
-        <div class="box currency-box">
-            <h2>AUD to JPY</h2>
-            <div class="big-text" id="yen-rate">...</div>
-            <div class="sub-text">1 AUD = ¥<span id="exact-rate">...</span></div>
-        </div>
+    <div class="box weather-box">
+        <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
     </div>
 
     <div class="box calendar-box" id="schedule-container">
@@ -249,11 +233,7 @@
     const schoolStartDate = new Date("2026-01-28T00:00:00"); 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
-    // =========================================================================
-    // 1. WEEKLY SCHEDULE (STATIC CALENDAR)
-    // Add events here using the format: { time: "HH:MM", title: "Name", type: "category" }
-    // Categories: "sport", "tutor", "family", "other"
-    // =========================================================================
+    // 1. WEEKLY SCHEDULE
     const weeklySchedule = {
         "Monday": [
             { time: "3:30 PM", title: "Footy Training", type: "sport" },
@@ -412,7 +392,6 @@
         document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'short', day: 'numeric'});
         
-        // Refresh Calendar at midnight
         if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
             updateSchoolData();
             generateCalendar();
