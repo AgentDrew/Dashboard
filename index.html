@@ -8,7 +8,6 @@
     <style>
         :root {
             /* TV SAFE ZONE: Adjust this if edges are still cut off */
-            /* 2vw is usually perfect for most TVs */
             --safe-margin: 2vw; 
         }
 
@@ -74,6 +73,28 @@
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
+
+        /* --- WEATHER WIDGET ZOOM FIX --- */
+        .weather-box { 
+            padding: 0; 
+            overflow: hidden; 
+            background: rgba(0, 0, 0, 0.35); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .weather-box iframe {
+            /* This zooms the widget contents by 25% */
+            transform: scale(1.25);
+            transform-origin: center center;
+            
+            /* We shrink the container slightly so when it zooms, it fills the space perfectly without clipping */
+            width: 80%; 
+            height: 80%;
+            border: none;
+        }
+
 
         /* --- MIDDLE ROW LAYOUT --- */
         .routine-box { grid-column: 1; grid-row: 2; }
@@ -150,7 +171,6 @@
         /* EXISTING STYLES */
         .time-box { justify-content: center; align-items: center; }
         .countdown-box { justify-content: center; align-items: center; text-align: center; }
-        .weather-box { padding: 0; overflow: hidden; background: rgba(0, 0, 0, 0.35); }
 
         /* Typography Defaults - Using VH units ensures text scales with screen size */
         h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
@@ -203,7 +223,7 @@
             <div class="sub-text">Days</div>
         </div>
         <div class="box weather-box">
-            <iframe src="https://indify.co/widgets/live/weather/i8i3fJozkeFtfq5lWVl6" style="border:none; width:100%; height:100%; background:transparent; display:block;"></iframe>
+            <iframe src="https://indify.co/widgets/live/weather/i8i3fJozkeFtfq5lWVl6"></iframe>
         </div>
     </div>
 
