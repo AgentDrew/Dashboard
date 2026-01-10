@@ -1,17 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Eamon's TV Dashboard</title>
+    <title>Eamon's Dashboard</title>
     <meta http-equiv="refresh" content="3600">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <style>
-        :root {
-            /* GLOBAL SCALE: Adjust this number if it's still too big/small */
-            /* 1.0 = Normal, 0.8 = Smaller, 0.6 = Tiny */
-            --scale-factor: 0.75; 
-        }
-
         body {
             background-color: #111;
             background-size: cover;
@@ -20,19 +14,15 @@
             transition: background-image 1s ease-in-out;
             color: #fff;
             font-family: 'Roboto', sans-serif;
-            margin: 0;
             
-            /* TV OVERSCAN PROTECTION (Keeps content away from edges) */
-            padding: 2vw; 
+            /* MONITOR RESET: No padding, full stretch */
+            margin: 0;
+            padding: 20px; /* Small 20px consistent border looks nice on monitors */
             
             height: 100vh;
             width: 100vw;
-            box-sizing: border-box;
-            overflow: hidden; /* Prevents scrolling */
-
-            /* THE MAGIC FIX: Zooms everything out to fit TV screens */
-            zoom: var(--scale-factor);
-            -moz-transform: scale(var(--scale-factor));
+            box-sizing: border-box; /* Ensures padding doesn't add to width */
+            overflow: hidden; 
         }
 
         /* Overlay */
@@ -44,15 +34,16 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT - Now using VH (Viewport Height) instead of Pixels */
+        /* GRID LAYOUT */
         .grid-container {
             display: grid;
-            /* Columns: 35% | 35% | Remaining */
-            grid-template-columns: 35fr 35fr 25fr; 
-            /* Rows: Header (18%) | Middle (Auto) | Footer (25%) */
-            grid-template-rows: 18vh 1fr 25vh;
-            gap: 2vh; /* Gap depends on screen height */
+            /* Columns: Equal | Equal | Narrower Right Col */
+            grid-template-columns: 1fr 1fr 320px; 
+            /* Rows: Header | Middle (Flex) | Footer (Fixed height) */
+            grid-template-rows: 140px 1fr 200px;
+            gap: 20px; 
             height: 100%;
+            width: 100%;
         }
 
         /* HEADER */
@@ -60,19 +51,18 @@
             grid-column: 1 / -1; 
             grid-row: 1;
             display: grid;
-            /* Header cols are relative too */
-            grid-template-columns: 25fr 25fr 50fr; 
-            gap: 2vh;
+            grid-template-columns: 280px 280px 1fr; 
+            gap: 20px;
         }
 
         /* GENERIC BOX */
         .box {
-            background: rgba(0, 0, 0, 0.45); /* Slightly darker for TV contrast */
-            backdrop-filter: blur(4px); 
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.45); 
+            backdrop-filter: blur(8px); /* Higher blur looks better on sharp monitors */
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.15); 
-            border-radius: 16px; /* Rounder corners for TV */
-            padding: 1.5vh; /* Padding relative to height */
+            border-radius: 12px; 
+            padding: 20px; 
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
@@ -87,7 +77,7 @@
             grid-row: 2;
             display: flex;
             flex-direction: column;
-            gap: 2vh;
+            gap: 20px;
         }
 
         .uniform-box {
@@ -116,7 +106,7 @@
         .day-column {
             flex: 1; 
             border-right: 1px solid rgba(255,255,255,0.1);
-            padding: 1vh;
+            padding: 15px;
             display: flex;
             flex-direction: column;
         }
@@ -124,8 +114,8 @@
 
         .day-header {
             text-align: center;
-            padding-bottom: 0.5vh;
-            margin-bottom: 0.5vh;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: center;
@@ -134,18 +124,18 @@
         }
         
         .day-name { font-size: 1em; color: #4caf50; text-transform: uppercase; font-weight: bold; }
-        .day-date { font-size: 1.2em; font-weight: 300; }
+        .day-date { font-size: 1.1em; font-weight: 300; }
 
         /* Event Card */
         .event-card {
             background: rgba(255,255,255,0.08);
             border-radius: 6px;
-            padding: 0.5vh 0.8vw;
-            margin-bottom: 0.5vh;
-            border-left: 4px solid #ccc; /* Thicker border for TV visibility */
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-left: 4px solid #ccc; 
         }
         .event-time { font-size: 0.8em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
-        .event-title { font-size: 1em; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .event-title { font-size: 0.9em; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .tag-personal { border-left-color: #f44336; } 
         .tag-work { border-left-color: #2196f3; }    
         .tag-trip { border-left-color: #ff9800; }     
@@ -155,30 +145,30 @@
         .countdown-box { justify-content: center; align-items: center; text-align: center; }
         .weather-box { padding: 0; overflow: hidden; background: rgba(0, 0, 0, 0.35); }
 
-        /* Typography Defaults - Using VH units ensures text scales with screen size */
-        h2 { margin: 0 0 1vh 0; font-size: 2.2vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
-        .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        /* Typography Defaults */
+        h2 { margin: 0 0 10px 0; font-size: 1em; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        .big-text { font-size: 2em; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        #clock { font-size: 10vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
-        #date { font-size: 2.5vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #clock { font-size: 5em; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        #date { font-size: 1.4em; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         
-        #countdown { font-size: 8vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
-        .sub-text { font-size: 2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #countdown { font-size: 4em; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
+        .sub-text { font-size: 1em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
         /* CURRENCY & UNIFORM SPECIFICS */
-        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2vh; margin-bottom: 5px; color: #aaa;}
+        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 0.9em; margin-bottom: 5px; color: #aaa;}
         
-        #yen-rate { font-size: 6vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
+        #yen-rate { font-size: 3.5em; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
         
-        #todays-uniform { font-size: 3.5vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
-        .uniform-icon { font-size: 6vh; margin-bottom: 5px; display: block; }
+        #todays-uniform { font-size: 2em; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
+        .uniform-icon { font-size: 3.5em; margin-bottom: 5px; display: block; }
         
         /* LIST STYLING */
-        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1vh;}
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;}
         li { 
-            font-size: 2.5vh; 
+            font-size: 1.2em; 
             border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: 0.5vh; 
+            padding-bottom: 5px; 
             text-shadow: 0 1px 2px rgba(0,0,0,0.6); 
             font-weight: 500; 
             display: flex;
