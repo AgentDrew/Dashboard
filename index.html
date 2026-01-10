@@ -36,24 +36,23 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT - 3 Rows */
+        /* GRID LAYOUT */
         .grid-container {
             display: grid;
-            /* Middle Row Columns: Equal width for Routine, Subjects, Weather */
-            grid-template-columns: 1fr 1fr 1fr; 
-            /* Rows: Header (20vh) | Middle (Auto) | Footer (25vh) */
+            /* Columns: 35% | 35% | 30% (Weather) */
+            grid-template-columns: 35fr 35fr 30fr; 
+            /* Rows: Header (20vh) | Middle (Auto) | Bottom (25vh) */
             grid-template-rows: 20vh 1fr 25vh;
             gap: 2vh; 
             height: 100%;
             width: 100%;
         }
 
-        /* HEADER - Now 4 Columns */
+        /* HEADER */
         .header-row {
             grid-column: 1 / -1; 
             grid-row: 1;
             display: grid;
-            /* Time | Countdown | Uniform | Currency */
             grid-template-columns: 1fr 1fr 1fr 1fr; 
             gap: 2vh;
         }
@@ -71,7 +70,7 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
 
-        /* HEADER SPECIFIC BOX ALIGNMENTS */
+        /* HEADER SPECIFIC */
         .time-box { justify-content: center; align-items: center; }
         .countdown-box { justify-content: center; align-items: center; text-align: center; }
         .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.55); }
@@ -81,10 +80,10 @@
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* Weather now takes the 3rd spot in Middle Row */
+        /* WEATHER: Now spans ROW 2 and ROW 3 (Tall Column on the Right) */
         .weather-box { 
             grid-column: 3; 
-            grid-row: 2;
+            grid-row: 2 / span 2; /* This makes it stretch to bottom */
             padding: 0; 
             overflow: hidden; 
             background: rgba(0, 0, 0, 0.35); 
@@ -95,11 +94,14 @@
             height: 100%;
             border: none;
             display: block;
+            /* Small zoom to make text readable but fit the tall narrow column */
+            transform: scale(1.1);
+            transform-origin: center top;
         }
 
-        /* CALENDAR STYLING (Dynamic) */
+        /* CALENDAR: Now only spans the first 2 columns */
         .calendar-box {
-            grid-column: 1 / -1;
+            grid-column: 1 / span 2; /* Stops before the weather box */
             grid-row: 3;
             padding: 0; 
             flex-direction: row; 
@@ -155,7 +157,6 @@
         #countdown { font-size: 7vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
         .sub-text { font-size: 2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
-        /* Adjusted sizes for the new Header positions */
         .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2vh; margin-bottom: 0; color: #aaa;}
         #yen-rate { font-size: 6vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 0; }
         
@@ -176,30 +177,25 @@
 <div class="grid-container">
     
     <div class="header-row">
-        
         <div class="box time-box">
             <div id="clock">--:--</div>
             <div id="date">Loading...</div>
         </div>
-        
         <div class="box countdown-box">
             <h2 style="border:none; margin:0;">Japan Trip 🇯🇵</h2>
             <div class="big-text" id="countdown">0</div>
             <div class="sub-text">Days</div>
         </div>
-        
         <div class="box uniform-box">
             <h2>Wear Today</h2>
             <span class="uniform-icon" id="uniform-icon">👔</span>
             <div id="todays-uniform">Loading...</div>
         </div>
-
         <div class="box currency-box">
             <h2>AUD to JPY</h2>
             <div class="big-text" id="yen-rate">...</div>
             <div class="sub-text">1 AUD = ¥<span id="exact-rate">...</span></div>
         </div>
-
     </div>
 
     <div class="box routine-box">
