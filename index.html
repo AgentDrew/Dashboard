@@ -69,7 +69,7 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
 
-        /* WEATHER WIDGET ZOOM */
+        /* --- WEATHER WIDGET ZOOM FIX (UPDATED) --- */
         .weather-box { 
             padding: 0; 
             overflow: hidden; 
@@ -80,10 +80,13 @@
         }
 
         .weather-box iframe {
-            transform: scale(1.25);
+            /* Massive Zoom: 1.75x */
+            transform: scale(1.75);
             transform-origin: center center;
-            width: 80%; 
-            height: 80%;
+            
+            /* Math to keep it centered: 100% / 1.75 = ~57% */
+            width: 57%; 
+            height: 57%;
             border: none;
         }
 
@@ -364,11 +367,11 @@
             const dayName = daysOfWeek[date.getDay()];
             const shortDate = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
             
-            // Determine Header Label (Today, Tomorrow, or Day Name)
+            // Determine Header Label
             let headerLabel = dayName;
             if (i === 0) headerLabel = "Today";
             if (i === 1) headerLabel = "Tomorrow";
-            if (i > 1) headerLabel = dayName.substring(0, 3); // Shorten Mon, Tue
+            if (i > 1) headerLabel = dayName.substring(0, 3); 
 
             // Create Column
             const col = document.createElement("div");
@@ -409,7 +412,7 @@
         document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'short', day: 'numeric'});
         
-        // Refresh Calendar at midnight (check every minute)
+        // Refresh Calendar at midnight
         if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
             updateSchoolData();
             generateCalendar();
