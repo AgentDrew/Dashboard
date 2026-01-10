@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eamon's Dashboard</title>
+    <meta http-equiv="refresh" content="3600">
+    <style>
+        body {
+            background-color: #111;
+            /* Background Image Styling */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background-image 1s ease-in-out;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.25); 
+            z-index: -1;
+        }
+
+        /* GRID LAYOUT */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 220px; 
+            grid-template-rows: 160px 1fr 220px;
+            gap: 20px;
+            height: 100%;
+        }
+
+        /* HEADER */
+        .header-row {
+            grid-column: 1 / -1; 
+            grid-row: 1;
+            display: grid;
+            grid-template-columns: 260px 260px 1fr; 
+            gap: 20px;
+        }
+
+        /* GENERIC BOX */
+        .box {
+            background: rgba(0, 0, 0, 0.35); 
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
+        }
+
+        /* --- MIDDLE ROW LAYOUT --- */
+        .routine-box { grid-column: 1; grid-row: 2; }
+        .subjects-box { grid-column: 2; grid-row: 2; }
+        
+        .right-column-stack {
+            grid-column: 3;
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .uniform-box {
+            flex: 1; 
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(40, 50, 60, 0.45); 
+        }
+
+        .currency-box { 
+            flex: 1; 
+            justify-content: center; 
+            text-align: center;
+        }
+
+        /* HORIZONTAL CALENDAR STYLING */
+        .calendar-box {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            padding: 0; 
+            flex-direction: row; 
+            overflow: hidden; 
+        }
+
+        .day-column {
+            flex: 1; 
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .day-column:last-child { border-right: none; }
+
+        .day-header {
+            text-align: center;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: baseline;
+        }
+        
+        .day-name { font-size: 0.9em; color: #4caf50; text-transform: uppercase; font-weight: bold; }
+        .day-date { font-size: 1.1em; font-weight: 300; }
+
+        /* Event Card */
+        .event-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            border-left: 3px solid #ccc; 
+        }
+        .event-time { font-size: 0.7em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+        .event-title { font-size: 0.85em; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .tag-personal { border-left-color: #f44336; } 
+        .tag-work { border-left-color: #2196f3; }    
+        .tag-trip { border-left-color: #ff9800; }     
+
+        /* EXISTING STYLES */
+        .time-box { justify-content: center; align-items: center; }
+        .countdown-box { justify-content: center; align-items: center; text-align: center; }
+        .weather-box { padding: 0; overflow: hidden; background: rgba(0, 0, 0, 0.35); }
+
+        /* Typography Defaults */
+        h2 { margin: 0 0 15px 0; font-size: 1em; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        .big-text { font-size: 2em; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        
+        #clock { font-size: 4.8em; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        #date { font-size: 1.3em; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        
+        #countdown { font-size: 4em; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
+        .sub-text { font-size: 0.9em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+
+        /* CURRENCY & UNIFORM SPECIFICS */
+        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 0.9em; margin-bottom: 5px; color: #aaa;}
+        
+        #yen-rate { font-size: 3em; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
+        
+        #todays-uniform { font-size: 1.8em; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
+        .uniform-icon { font-size: 2.5em; margin-bottom: 5px; display: block; }
+        
+        /* LIST STYLING */
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;}
+        li { 
+            font-size: 1.3em; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 8px; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6); 
+            font-weight: 500; 
+            display: flex;
+            align-items: center;
+        }
+        li:last-child { border-bottom: none; }
+
+        .icon { width: 30px; display: inline-block; text-align: center; margin-right: 10px; }
+        .daily-chore { color: #ffd700; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="grid-container">
+    
+    <div class="header-row">
+        <div class="box time-box">
+            <div id="clock">--:--</div>
+            <div id="date">Loading...</div>
+        </div>
+        <div class="box countdown-box">
+            <h2 style="border:none; margin:0;">Japan Trip 🇯🇵</h2>
+            <div class="big-text" id="countdown">0</div>
+            <div class="sub-text">Days</div>
+        </div>
+        <div class="box weather-box">
+            <iframe src="https://indify.co/widgets/live/weather/i8i3fJozkeFtfq5lWVl6" style="border:none; width:100%; height:100%; background:transparent; display:block;"></iframe>
+        </div>
+    </div>
+
+    <div class="box routine-box">
+        <h2>Morning Checklist</h2>
+        <ul>
+            <li><span class="icon">💻</span> Charge Laptop</li>
+            <li><span class="icon">🍱</span> Pack Lunch</li>
+            <li><span class="icon">🦷</span> Brush Teeth</li>
+            <li><span class="icon">🎒</span> Pack Bag</li>
+            <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading Chore...</span></li>
+        </ul>
+    </div>
+
+    <div class="box subjects-box">
+        <h2>Today's Subjects</h2>
+        <ul id="subject-list">
+            <li>Loading...</li>
+        </ul>
+    </div>
+
+    <div class="right-column-stack">
+        
+        <div class="box uniform-box">
+            <h2>Wear Today</h2>
+            <span class="uniform-icon" id="uniform-icon">👔</span>
+            <div id="todays-uniform">Loading...</div>
+        </div>
+
+        <div class="box currency-box">
+            <h2>AUD to JPY</h2>
+            <div class="big-text" id="yen-rate">...</div>
+            <div class="sub-text">1 AUD = ¥<span id="exact-rate">...</span></div>
+        </div>
+
+    </div>
+
+    <div class="box calendar-box">
+        <div class="day-column">
+            <div class="day-header"><span class="day-name">Today</span> <span class="day-date">Jan 10</span></div>
+            <div class="event-card tag-personal">
+                <div class="event-time">3:30 PM</div>
+                <div class="event-title">Footy Training</div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header"><span class="day-name">Sun</span> <span class="day-date">Jan 11</span></div>
+             <div class="event-card tag-work">
+                <div class="event-time">10:00 AM</div>
+                <div class="event-title">Maths Tutor</div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header"><span class="day-name">Mon</span> <span class="day-date">Jan 12</span></div>
+            <div class="event-card tag-trip">
+                <div class="event-time">After School</div>
+                <div class="event-title">Study for Science</div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header"><span class="day-name">Tue</span> <span class="day-date">Jan 13</span></div>
+             <div class="event-card tag-personal">
+                <div class="event-time">6:00 PM</div>
+                <div class="event-title">Family Dinner</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const schoolStartDate = new Date("2026-01-28T00:00:00"); 
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
+    // 1. SUBJECTS (Normal Term Time)
+    const schoolTimetable = {
+        "Monday": ["🧮 Maths", "📖 English", "🧪 Science", "⚽ Sport"],
+        "Tuesday": ["🎨 Art", "🗺️ Geography", "🧮 Maths", "💻 Digital Tech"],
+        "Wednesday": ["🧪 Science", "🏃 PE", "📖 English", "📜 History"],
+        "Thursday": ["🧮 Maths", "🔨 Woodwork", "💻 Digital Tech", "📖 English"],
+        "Friday": ["⚽ Sport", "🧪 Science", "🎨 Art", "🧘 Assembly"],
+        "Saturday": ["🎉 No School", "🎮 Relax", "🧹 Clean Room"],
+        "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
+    };
+
+    // 2. CHORES (Always Active)
+    const dailyChores = {
+        "Monday": "Empty Dishwasher",
+        "Tuesday": "Take out Bins",
+        "Wednesday": "Walk the Dog",
+        "Thursday": "Clean Room",
+        "Friday": "Pack Sports Gear",
+        "Saturday": "Vacuum",
+        "Sunday": "Iron Uniforms"
+    };
+
+    // 3. UNIFORMS (Normal Term Time)
+    const schoolUniforms = {
+        "Monday": "Sports PE",
+        "Tuesday": "Formal Grey",
+        "Wednesday": "Formal Grey",
+        "Thursday": "Formal Grey",
+        "Friday": "Sports PE",
+        "Saturday": "Casual",
+        "Sunday": "Casual"
+    };
+
+    function updateSchoolData() {
+        const now = new Date();
+        const dayName = daysOfWeek[now.getDay()];
+
+        // --- CHECK IF HOLIDAYS ---
+        // If today is BEFORE Jan 28, override everything to Holiday Mode
+        if (now < schoolStartDate) {
+            
+            // 1. Show Holidays in Subjects box
+            const subjectList = document.getElementById("subject-list");
+            subjectList.innerHTML = "<li>🎉 School Holidays!</li><li>🎮 Relax</li><li>🏖️ Beach</li>";
+            
+            // 2. Set Uniform to Casual
+            document.getElementById("todays-uniform").textContent = "Casual";
+            document.getElementById("uniform-icon").textContent = "👕";
+            
+            // 3. Chores still run (Parents orders!)
+            const chore = dailyChores[dayName] || "Check Calendar";
+            document.getElementById("todays-chore").textContent = chore;
+            
+            return; // Stop here, don't load the normal school data
+        }
+
+        // --- IF SCHOOL HAS STARTED (Normal Logic) ---
+
+        // Update Subjects
+        const subjects = schoolTimetable[dayName] || ["No School Data"];
+        const subjectList = document.getElementById("subject-list");
+        subjectList.innerHTML = ""; 
+        subjects.forEach(subject => {
+            const li = document.createElement("li");
+            li.textContent = subject;
+            subjectList.appendChild(li);
+        });
+
+        // Update Chore
+        const chore = dailyChores[dayName] || "Check Calendar";
+        document.getElementById("todays-chore").textContent = chore;
+
+        // Update Uniform
+        const uniform = schoolUniforms[dayName] || "Casual";
+        document.getElementById("todays-uniform").textContent = uniform;
+        
+        // Change Uniform Icon based on text
+        const uniformIcon = document.getElementById("uniform-icon");
+        if(uniform.includes("Sport") || uniform.includes("PE")) {
+            uniformIcon.textContent = "👟"; // Sports Shoe
+        } else if (uniform.includes("Formal")) {
+            uniformIcon.textContent = "👔"; // Tie
+        } else {
+            uniformIcon.textContent = "👕"; // T-shirt
+        }
+    }
+    
+    // Run once on load
+    updateSchoolData();
+
+    // --- 2. CLOCK ---
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'short', day: 'numeric'});
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- 3. COUNTDOWN ---
+    const targetDate = new Date("2026-06-18T00:00:00").getTime();
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24)); 
+        document.getElementById('countdown').innerText = days > 0 ? days : "Here!";
+    }
+    updateCountdown();
+
+    // --- 4. CURRENCY ---
+    async function fetchRate() {
+        try {
+            const response = await fetch('https://api.frankfurter.app/latest?from=AUD&to=JPY');
+            const data = await response.json();
+            const rate = data.rates.JPY;
+            document.getElementById('yen-rate').innerText = "¥" + Math.floor(rate);
+            document.getElementById('exact-rate').innerText = rate.toFixed(2);
+        } catch (error) {
+            document.getElementById('yen-rate').innerText = "-";
+        }
+    }
+    fetchRate();
+    setInterval(fetchRate, 3600000); 
+
+    // --- 5. BACKGROUNDS ---
+    const images = [
+        "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1528360983277-13d9b152c6d1?auto=format&fit=crop&w=2560&q=80",
+        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=2560&q=80"
+    ];
+    let currentImageIndex = 0;
+    function rotateBackground() {
+        document.body.style.backgroundImage = `url('${images[currentImageIndex]}')`;
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+    }
+    rotateBackground();
+    setInterval(rotateBackground, 30000);
+</script>
+
+</body>
+</html>
