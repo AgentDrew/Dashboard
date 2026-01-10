@@ -3,14 +3,9 @@
 <head>
     <title>Eamon's Dashboard</title>
     <meta http-equiv="refresh" content="3600">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <style>
-        :root {
-            /* TV SAFE ZONE: Adjust this if edges are still cut off */
-            --safe-margin: 2vw; 
-        }
-
         body {
             background-color: #111;
             background-size: cover;
@@ -20,10 +15,7 @@
             color: #fff;
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            
-            /* This ensures the dashboard fills the screen but respects the bezel */
-            padding: var(--safe-margin);
-            
+            padding: 20px;
             height: 100vh;
             width: 100vw;
             box-sizing: border-box;
@@ -39,13 +31,12 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT - Full Height & Width */
+        /* GRID LAYOUT - SIMPLIFIED (2 Rows only) */
         .grid-container {
             display: grid;
-            /* Columns: 35% | 35% | Remaining space */
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header (18%) | Middle (Auto) | Footer (25%) */
-            grid-template-rows: 18vh 1fr 25vh;
+            /* Row 1: Header (20%), Row 2: Content (Rest of screen) */
+            grid-template-rows: 20vh 1fr;
             gap: 2vh; 
             height: 100%;
             width: 100%;
@@ -56,7 +47,6 @@
             grid-column: 1 / -1; 
             grid-row: 1;
             display: grid;
-            /* Header cols */
             grid-template-columns: 25fr 25fr 50fr; 
             gap: 2vh;
         }
@@ -64,17 +54,17 @@
         /* GENERIC BOX */
         .box {
             background: rgba(0, 0, 0, 0.45); 
-            backdrop-filter: blur(4px); 
-            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.15); 
-            border-radius: 16px; 
-            padding: 1.5vh; 
+            border-radius: 12px; 
+            padding: 20px; 
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
 
-        /* --- WEATHER WIDGET ZOOM FIX --- */
+        /* WEATHER WIDGET ZOOM */
         .weather-box { 
             padding: 0; 
             overflow: hidden; 
@@ -85,18 +75,14 @@
         }
 
         .weather-box iframe {
-            /* This zooms the widget contents by 25% */
             transform: scale(1.25);
             transform-origin: center center;
-            
-            /* We shrink the container slightly so when it zooms, it fills the space perfectly without clipping */
             width: 80%; 
             height: 80%;
             border: none;
         }
 
-
-        /* --- MIDDLE ROW LAYOUT --- */
+        /* MIDDLE ROW */
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
@@ -122,58 +108,8 @@
             text-align: center;
         }
 
-        /* HORIZONTAL CALENDAR STYLING */
-        .calendar-box {
-            grid-column: 1 / -1;
-            grid-row: 3;
-            padding: 0; 
-            flex-direction: row; 
-            overflow: hidden; 
-        }
-
-        .day-column {
-            flex: 1; 
-            border-right: 1px solid rgba(255,255,255,0.1);
-            padding: 1vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .day-column:last-child { border-right: none; }
-
-        .day-header {
-            text-align: center;
-            padding-bottom: 0.5vh;
-            margin-bottom: 0.5vh;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            align-items: baseline;
-        }
-        
-        .day-name { font-size: 2.2vh; color: #4caf50; text-transform: uppercase; font-weight: bold; }
-        .day-date { font-size: 2.5vh; font-weight: 300; }
-
-        /* Event Card */
-        .event-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 6px;
-            padding: 0.5vh 0.8vw;
-            margin-bottom: 0.5vh;
-            border-left: 6px solid #ccc; /* Thicker border for TV visibility */
-        }
-        .event-time { font-size: 1.8vh; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
-        .event-title { font-size: 2.2vh; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-        .tag-personal { border-left-color: #f44336; } 
-        .tag-work { border-left-color: #2196f3; }    
-        .tag-trip { border-left-color: #ff9800; }     
-
-        /* EXISTING STYLES */
-        .time-box { justify-content: center; align-items: center; }
-        .countdown-box { justify-content: center; align-items: center; text-align: center; }
-
-        /* Typography Defaults - Using VH units ensures text scales with screen size */
-        h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        /* Typography */
+        h2 { margin: 0 0 1.5vh 0; font-size: 2.8vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1vh;}
         .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
         #clock { font-size: 11vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
@@ -182,20 +118,25 @@
         #countdown { font-size: 8vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
         .sub-text { font-size: 2.2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
-        /* CURRENCY & UNIFORM SPECIFICS */
         .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2.2vh; margin-bottom: 5px; color: #aaa;}
+        #yen-rate { font-size: 8vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
         
-        #yen-rate { font-size: 7vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
+        #todays-uniform { font-size: 5vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
+        .uniform-icon { font-size: 9vh; margin-bottom: 5px; display: block; }
         
-        #todays-uniform { font-size: 4vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
-        .uniform-icon { font-size: 7vh; margin-bottom: 5px; display: block; }
+        /* LIST STYLING - Increased Gap for vertical fill */
+        ul { 
+            list-style-type: none; padding: 0; margin: 0; 
+            display: flex; flex-direction: column; 
+            /* Increased gap so list items spread out vertically */
+            gap: 2.5vh; 
+            flex-grow: 1; /* Pushes content to fill box */
+        }
         
-        /* LIST STYLING */
-        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1vh;}
         li { 
-            font-size: 2.8vh; 
+            font-size: 3.2vh; /* Slightly bigger font */
             border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: 0.5vh; 
+            padding-bottom: 1vh; 
             text-shadow: 0 1px 2px rgba(0,0,0,0.6); 
             font-weight: 500; 
             display: flex;
@@ -203,7 +144,7 @@
         }
         li:last-child { border-bottom: none; }
 
-        .icon { width: 4vh; display: inline-block; text-align: center; margin-right: 1vw; }
+        .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
         .daily-chore { color: #ffd700; font-weight: bold; }
 
     </style>
@@ -246,51 +187,18 @@
     </div>
 
     <div class="right-column-stack">
-        
         <div class="box uniform-box">
             <h2>Wear Today</h2>
             <span class="uniform-icon" id="uniform-icon">👔</span>
             <div id="todays-uniform">Loading...</div>
         </div>
-
         <div class="box currency-box">
             <h2>AUD to JPY</h2>
             <div class="big-text" id="yen-rate">...</div>
             <div class="sub-text">1 AUD = ¥<span id="exact-rate">...</span></div>
         </div>
-
     </div>
 
-    <div class="box calendar-box">
-        <div class="day-column">
-            <div class="day-header"><span class="day-name">Today</span> <span class="day-date">Jan 10</span></div>
-            <div class="event-card tag-personal">
-                <div class="event-time">3:30 PM</div>
-                <div class="event-title">Footy Training</div>
-            </div>
-        </div>
-        <div class="day-column">
-            <div class="day-header"><span class="day-name">Sun</span> <span class="day-date">Jan 11</span></div>
-             <div class="event-card tag-work">
-                <div class="event-time">10:00 AM</div>
-                <div class="event-title">Maths Tutor</div>
-            </div>
-        </div>
-        <div class="day-column">
-            <div class="day-header"><span class="day-name">Mon</span> <span class="day-date">Jan 12</span></div>
-            <div class="event-card tag-trip">
-                <div class="event-time">After School</div>
-                <div class="event-title">Study for Science</div>
-            </div>
-        </div>
-        <div class="day-column">
-            <div class="day-header"><span class="day-name">Tue</span> <span class="day-date">Jan 13</span></div>
-             <div class="event-card tag-personal">
-                <div class="event-time">6:00 PM</div>
-                <div class="event-title">Family Dinner</div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -298,7 +206,7 @@
     const schoolStartDate = new Date("2026-01-28T00:00:00"); 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
-    // 1. SUBJECTS (Normal Term Time)
+    // 1. SUBJECTS
     const schoolTimetable = {
         "Monday": ["🧮 Maths", "📖 English", "🧪 Science", "⚽ Sport"],
         "Tuesday": ["🎨 Art", "🗺️ Geography", "🧮 Maths", "💻 Digital Tech"],
@@ -309,7 +217,7 @@
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
     };
 
-    // 2. CHORES (Always Active)
+    // 2. CHORES
     const dailyChores = {
         "Monday": "Empty Dishwasher",
         "Tuesday": "Take out Bins",
@@ -320,7 +228,7 @@
         "Sunday": "Iron Uniforms"
     };
 
-    // 3. UNIFORMS (Normal Term Time)
+    // 3. UNIFORMS
     const schoolUniforms = {
         "Monday": "Sports PE",
         "Tuesday": "Formal Grey",
@@ -335,27 +243,16 @@
         const now = new Date();
         const dayName = daysOfWeek[now.getDay()];
 
-        // --- CHECK IF HOLIDAYS ---
+        // HOLIDAY CHECK
         if (now < schoolStartDate) {
-            
-            // 1. Show Holidays in Subjects box
-            const subjectList = document.getElementById("subject-list");
-            subjectList.innerHTML = "<li>🎉 School Holidays!</li><li>🎮 Relax</li><li>🏖️ Beach</li>";
-            
-            // 2. Set Uniform to Casual
+            document.getElementById("subject-list").innerHTML = "<li>🎉 School Holidays!</li><li>🎮 Relax</li><li>🏖️ Beach</li>";
             document.getElementById("todays-uniform").textContent = "Casual";
             document.getElementById("uniform-icon").textContent = "👕";
-            
-            // 3. Chores still run
-            const chore = dailyChores[dayName] || "Check Calendar";
-            document.getElementById("todays-chore").textContent = chore;
-            
+            document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
             return; 
         }
 
-        // --- IF SCHOOL HAS STARTED ---
-
-        // Update Subjects
+        // SCHOOL LOGIC
         const subjects = schoolTimetable[dayName] || ["No School Data"];
         const subjectList = document.getElementById("subject-list");
         subjectList.innerHTML = ""; 
@@ -365,29 +262,24 @@
             subjectList.appendChild(li);
         });
 
-        // Update Chore
-        const chore = dailyChores[dayName] || "Check Calendar";
-        document.getElementById("todays-chore").textContent = chore;
-
-        // Update Uniform
+        document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
+        
         const uniform = schoolUniforms[dayName] || "Casual";
         document.getElementById("todays-uniform").textContent = uniform;
         
-        // Change Uniform Icon based on text
         const uniformIcon = document.getElementById("uniform-icon");
         if(uniform.includes("Sport") || uniform.includes("PE")) {
-            uniformIcon.textContent = "👟"; // Sports Shoe
+            uniformIcon.textContent = "👟"; 
         } else if (uniform.includes("Formal")) {
-            uniformIcon.textContent = "👔"; // Tie
+            uniformIcon.textContent = "👔"; 
         } else {
-            uniformIcon.textContent = "👕"; // T-shirt
+            uniformIcon.textContent = "👕"; 
         }
     }
     
-    // Run once on load
     updateSchoolData();
 
-    // --- 2. CLOCK ---
+    // CLOCK
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -396,7 +288,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- 3. COUNTDOWN ---
+    // COUNTDOWN
     const targetDate = new Date("2026-06-18T00:00:00").getTime();
     function updateCountdown() {
         const now = new Date().getTime();
@@ -406,7 +298,7 @@
     }
     updateCountdown();
 
-    // --- 4. CURRENCY ---
+    // CURRENCY
     async function fetchRate() {
         try {
             const response = await fetch('https://api.frankfurter.app/latest?from=AUD&to=JPY');
@@ -421,7 +313,7 @@
     fetchRate();
     setInterval(fetchRate, 3600000); 
 
-    // --- 5. BACKGROUNDS ---
+    // BACKGROUNDS
     const images = [
         "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=2560&q=80",
         "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=80",
