@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <style>
+        :root {
+            /* TV SAFE ZONE: Adjust this if edges are still cut off */
+            --safe-margin: 2vw; 
+        }
+
         body {
             background-color: #111;
             background-size: cover;
@@ -15,7 +20,7 @@
             color: #fff;
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: var(--safe-margin);
             height: 100vh;
             width: 100vw;
             box-sizing: border-box;
@@ -31,12 +36,12 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT - SIMPLIFIED (2 Rows only) */
+        /* GRID LAYOUT */
         .grid-container {
             display: grid;
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Row 1: Header (20%), Row 2: Content (Rest of screen) */
-            grid-template-rows: 20vh 1fr;
+            /* Rows: Header | Middle | Bottom Calendar */
+            grid-template-rows: 18vh 1fr 25vh;
             gap: 2vh; 
             height: 100%;
             width: 100%;
@@ -57,8 +62,8 @@
             backdrop-filter: blur(8px); 
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.15); 
-            border-radius: 12px; 
-            padding: 20px; 
+            border-radius: 16px; 
+            padding: 1.5vh; 
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
@@ -108,8 +113,57 @@
             text-align: center;
         }
 
+        /* CALENDAR STYLING (Dynamic) */
+        .calendar-box {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            padding: 0; 
+            flex-direction: row; 
+            overflow: hidden; 
+        }
+
+        .day-column {
+            flex: 1; 
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 1vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .day-column:last-child { border-right: none; }
+
+        .day-header {
+            text-align: center;
+            padding-bottom: 0.5vh;
+            margin-bottom: 0.5vh;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: baseline;
+        }
+        
+        .day-name { font-size: 2.2vh; color: #4caf50; text-transform: uppercase; font-weight: bold; }
+        .day-date { font-size: 2.5vh; font-weight: 300; }
+
+        /* Event Card */
+        .event-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 0.5vh 0.8vw;
+            margin-bottom: 0.5vh;
+            border-left: 6px solid #ccc; 
+        }
+        .event-time { font-size: 1.8vh; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+        .event-title { font-size: 2.2vh; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        
+        /* Calendar Categories (Colors) */
+        .tag-sport { border-left-color: #f44336; }  /* Red */
+        .tag-tutor { border-left-color: #2196f3; }  /* Blue */
+        .tag-family { border-left-color: #ff9800; } /* Orange */
+        .tag-other { border-left-color: #9e9e9e; }  /* Grey */
+
         /* Typography */
-        h2 { margin: 0 0 1.5vh 0; font-size: 2.8vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1vh;}
+        h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
         #clock { font-size: 11vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
@@ -119,32 +173,16 @@
         .sub-text { font-size: 2.2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
         .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2.2vh; margin-bottom: 5px; color: #aaa;}
-        #yen-rate { font-size: 8vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
+        #yen-rate { font-size: 7vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 2px; }
         
-        #todays-uniform { font-size: 5vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
-        .uniform-icon { font-size: 9vh; margin-bottom: 5px; display: block; }
+        #todays-uniform { font-size: 4vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 5px; }
+        .uniform-icon { font-size: 7vh; margin-bottom: 5px; display: block; }
         
-        /* LIST STYLING - Increased Gap for vertical fill */
-        ul { 
-            list-style-type: none; padding: 0; margin: 0; 
-            display: flex; flex-direction: column; 
-            /* Increased gap so list items spread out vertically */
-            gap: 2.5vh; 
-            flex-grow: 1; /* Pushes content to fill box */
-        }
-        
-        li { 
-            font-size: 3.2vh; /* Slightly bigger font */
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: 1vh; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6); 
-            font-weight: 500; 
-            display: flex;
-            align-items: center;
-        }
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1vh;}
+        li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
         li:last-child { border-bottom: none; }
 
-        .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
+        .icon { width: 4vh; display: inline-block; text-align: center; margin-right: 1vw; }
         .daily-chore { color: #ffd700; font-weight: bold; }
 
     </style>
@@ -199,6 +237,8 @@
         </div>
     </div>
 
+    <div class="box calendar-box" id="schedule-container">
+        </div>
 </div>
 
 <script>
@@ -206,7 +246,40 @@
     const schoolStartDate = new Date("2026-01-28T00:00:00"); 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
-    // 1. SUBJECTS
+    // =========================================================================
+    // 1. WEEKLY SCHEDULE (STATIC CALENDAR)
+    // Add events here using the format: { time: "HH:MM", title: "Name", type: "category" }
+    // Categories: "sport", "tutor", "family", "other"
+    // =========================================================================
+    const weeklySchedule = {
+        "Monday": [
+            { time: "3:30 PM", title: "Footy Training", type: "sport" },
+            { time: "5:00 PM", title: "Maths Homework", type: "tutor" }
+        ],
+        "Tuesday": [
+            { time: "4:00 PM", title: "Swim Squad", type: "sport" },
+            { time: "6:30 PM", title: "Family Dinner", type: "family" }
+        ],
+        "Wednesday": [
+            { time: "3:30 PM", title: "Cricket Training", type: "sport" }
+        ],
+        "Thursday": [
+            { time: "4:00 PM", title: "English Tutor", type: "tutor" }
+        ],
+        "Friday": [
+            { time: "After School", title: "Relax / Gaming", type: "other" }
+        ],
+        "Saturday": [
+            { time: "9:00 AM", title: "Nippers / Beach", type: "sport" },
+            { time: "11:00 AM", title: "Chores", type: "other" }
+        ],
+        "Sunday": [
+            { time: "10:00 AM", title: "Family Brunch", type: "family" },
+            { time: "4:00 PM", title: "Prepare School Bag", type: "other" }
+        ]
+    };
+
+    // 2. SUBJECTS
     const schoolTimetable = {
         "Monday": ["🧮 Maths", "📖 English", "🧪 Science", "⚽ Sport"],
         "Tuesday": ["🎨 Art", "🗺️ Geography", "🧮 Maths", "💻 Digital Tech"],
@@ -217,7 +290,7 @@
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
     };
 
-    // 2. CHORES
+    // 3. CHORES
     const dailyChores = {
         "Monday": "Empty Dishwasher",
         "Tuesday": "Take out Bins",
@@ -228,7 +301,7 @@
         "Sunday": "Iron Uniforms"
     };
 
-    // 3. UNIFORMS
+    // 4. UNIFORMS
     const schoolUniforms = {
         "Monday": "Sports PE",
         "Tuesday": "Formal Grey",
@@ -238,6 +311,8 @@
         "Saturday": "Casual",
         "Sunday": "Casual"
     };
+
+    // --- MAIN LOGIC ---
 
     function updateSchoolData() {
         const now = new Date();
@@ -249,41 +324,96 @@
             document.getElementById("todays-uniform").textContent = "Casual";
             document.getElementById("uniform-icon").textContent = "👕";
             document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
-            return; 
-        }
-
-        // SCHOOL LOGIC
-        const subjects = schoolTimetable[dayName] || ["No School Data"];
-        const subjectList = document.getElementById("subject-list");
-        subjectList.innerHTML = ""; 
-        subjects.forEach(subject => {
-            const li = document.createElement("li");
-            li.textContent = subject;
-            subjectList.appendChild(li);
-        });
-
-        document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
-        
-        const uniform = schoolUniforms[dayName] || "Casual";
-        document.getElementById("todays-uniform").textContent = uniform;
-        
-        const uniformIcon = document.getElementById("uniform-icon");
-        if(uniform.includes("Sport") || uniform.includes("PE")) {
-            uniformIcon.textContent = "👟"; 
-        } else if (uniform.includes("Formal")) {
-            uniformIcon.textContent = "👔"; 
         } else {
-            uniformIcon.textContent = "👕"; 
+            // NORMAL TERM
+            const subjects = schoolTimetable[dayName] || ["No School Data"];
+            const subjectList = document.getElementById("subject-list");
+            subjectList.innerHTML = ""; 
+            subjects.forEach(subject => {
+                const li = document.createElement("li");
+                li.textContent = subject;
+                subjectList.appendChild(li);
+            });
+            document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
+            
+            const uniform = schoolUniforms[dayName] || "Casual";
+            document.getElementById("todays-uniform").textContent = uniform;
+            
+            const uniformIcon = document.getElementById("uniform-icon");
+            if(uniform.includes("Sport") || uniform.includes("PE")) {
+                uniformIcon.textContent = "👟"; 
+            } else if (uniform.includes("Formal")) {
+                uniformIcon.textContent = "👔"; 
+            } else {
+                uniformIcon.textContent = "👕"; 
+            }
         }
     }
-    
+
+    function generateCalendar() {
+        const container = document.getElementById("schedule-container");
+        container.innerHTML = "";
+        
+        const today = new Date();
+        
+        // Loop for 4 days
+        for (let i = 0; i < 4; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            
+            const dayName = daysOfWeek[date.getDay()];
+            const shortDate = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            
+            // Determine Header Label (Today, Tomorrow, or Day Name)
+            let headerLabel = dayName;
+            if (i === 0) headerLabel = "Today";
+            if (i === 1) headerLabel = "Tomorrow";
+            if (i > 1) headerLabel = dayName.substring(0, 3); // Shorten Mon, Tue
+
+            // Create Column
+            const col = document.createElement("div");
+            col.className = "day-column";
+            
+            const header = document.createElement("div");
+            header.className = "day-header";
+            header.innerHTML = `<span class="day-name">${headerLabel}</span> <span class="day-date">${shortDate}</span>`;
+            col.appendChild(header);
+
+            // Get events for this day
+            const events = weeklySchedule[dayName] || [];
+            
+            if (events.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "event-card tag-other";
+                empty.style.opacity = "0.5";
+                empty.innerHTML = `<div class="event-title">Free Day</div>`;
+                col.appendChild(empty);
+            } else {
+                events.forEach(evt => {
+                    const card = document.createElement("div");
+                    card.className = `event-card tag-${evt.type}`;
+                    card.innerHTML = `<div class="event-time">${evt.time}</div><div class="event-title">${evt.title}</div>`;
+                    col.appendChild(card);
+                });
+            }
+            container.appendChild(col);
+        }
+    }
+
     updateSchoolData();
+    generateCalendar();
 
     // CLOCK
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'short', day: 'numeric'});
+        
+        // Refresh Calendar at midnight (check every minute)
+        if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+            updateSchoolData();
+            generateCalendar();
+        }
     }
     setInterval(updateClock, 1000);
     updateClock();
