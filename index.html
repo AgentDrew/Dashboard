@@ -80,10 +80,10 @@
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* WEATHER: Now spans ROW 2 and ROW 3 (Tall Column on the Right) */
+        /* WEATHER */
         .weather-box { 
             grid-column: 3; 
-            grid-row: 2 / span 2; /* This makes it stretch to bottom */
+            grid-row: 2 / span 2; 
             padding: 0; 
             overflow: hidden; 
             background: rgba(0, 0, 0, 0.35); 
@@ -94,14 +94,13 @@
             height: 100%;
             border: none;
             display: block;
-            /* Small zoom to make text readable but fit the tall narrow column */
             transform: scale(1.1);
             transform-origin: center top;
         }
 
-        /* CALENDAR: Now only spans the first 2 columns */
+        /* CALENDAR */
         .calendar-box {
-            grid-column: 1 / span 2; /* Stops before the weather box */
+            grid-column: 1 / span 2; 
             grid-row: 3;
             padding: 0; 
             flex-direction: row; 
@@ -230,32 +229,21 @@
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
     // 1. WEEKLY SCHEDULE
+    // Updated with Baseball and Fiona/Annie event
     const weeklySchedule = {
-        "Monday": [
-            { time: "3:30 PM", title: "Footy Training", type: "sport" },
-            { time: "5:00 PM", title: "Maths Homework", type: "tutor" }
-        ],
+        "Monday": [],
         "Tuesday": [
-            { time: "4:00 PM", title: "Swim Squad", type: "sport" },
-            { time: "6:30 PM", title: "Family Dinner", type: "family" }
+            { time: "4:30 PM", title: "Baseball Training", type: "sport" }
         ],
         "Wednesday": [
-            { time: "3:30 PM", title: "Cricket Training", type: "sport" }
+            { time: "All Day", title: "Fiona sees Annie", type: "family" }
         ],
         "Thursday": [
-            { time: "4:00 PM", title: "English Tutor", type: "tutor" }
+            { time: "4:30 PM", title: "Baseball Training", type: "sport" }
         ],
-        "Friday": [
-            { time: "After School", title: "Relax / Gaming", type: "other" }
-        ],
-        "Saturday": [
-            { time: "9:00 AM", title: "Nippers / Beach", type: "sport" },
-            { time: "11:00 AM", title: "Chores", type: "other" }
-        ],
-        "Sunday": [
-            { time: "10:00 AM", title: "Family Brunch", type: "family" },
-            { time: "4:00 PM", title: "Prepare School Bag", type: "other" }
-        ]
+        "Friday": [],
+        "Saturday": [],
+        "Sunday": []
     };
 
     // 2. SUBJECTS
