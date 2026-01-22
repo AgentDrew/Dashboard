@@ -80,7 +80,7 @@
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* WEATHER */
+        /* WEATHER: Tall Column on the Right */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -98,53 +98,26 @@
             transform-origin: center top;
         }
 
-        /* CALENDAR */
+        /* GOOGLE CALENDAR BOX (Dark Mode Trick) */
         .calendar-box {
             grid-column: 1 / span 2; 
             grid-row: 3;
             padding: 0; 
-            flex-direction: row; 
             overflow: hidden; 
+            
+            /* DARK MODE MAGIC */
+            background: #fff; 
+            filter: invert(0.9) hue-rotate(180deg);
+            border-radius: 12px;
         }
 
-        .day-column {
-            flex: 1; 
-            border-right: 1px solid rgba(255,255,255,0.1);
-            padding: 1vh;
-            display: flex;
-            flex-direction: column;
+        /* Forces the Google iframe to fill the box */
+        .calendar-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
         }
-        .day-column:last-child { border-right: none; }
-
-        .day-header {
-            text-align: center;
-            padding-bottom: 0.5vh;
-            margin-bottom: 0.5vh;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            align-items: baseline;
-        }
-        
-        .day-name { font-size: 2.2vh; color: #4caf50; text-transform: uppercase; font-weight: bold; }
-        .day-date { font-size: 2.5vh; font-weight: 300; }
-
-        /* Event Card */
-        .event-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 6px;
-            padding: 0.5vh 0.8vw;
-            margin-bottom: 0.5vh;
-            border-left: 6px solid #ccc; 
-        }
-        .event-time { font-size: 1.8vh; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
-        .event-title { font-size: 2.2vh; font-weight: 500; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-        
-        .tag-sport { border-left-color: #f44336; }  
-        .tag-tutor { border-left-color: #2196f3; }  
-        .tag-family { border-left-color: #ff9800; } 
-        .tag-other { border-left-color: #9e9e9e; }  
 
         /* Typography */
         h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
@@ -162,7 +135,6 @@
         #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
         .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
         
-        /* Adjusted list to handle more subjects without overflowing */
         ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5vh; flex-grow: 1; overflow-y: auto;}
         li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
         li:last-child { border-bottom: none; }
@@ -220,8 +192,9 @@
         <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
     </div>
 
-    <div class="box calendar-box" id="schedule-container">
-        </div>
+    <div class="box calendar-box">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+    </div>
 </div>
 
 <script>
@@ -229,35 +202,18 @@
     const schoolStartDate = new Date("2026-01-28T00:00:00"); 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
-    // 1. WEEKLY SCHEDULE
-    const weeklySchedule = {
-        "Monday": [],
-        "Tuesday": [
-            { time: "4:30 PM", title: "Baseball Training", type: "sport" }
-        ],
-        "Wednesday": [
-            { time: "All Day", title: "Fiona sees Annie", type: "family" }
-        ],
-        "Thursday": [
-            { time: "4:30 PM", title: "Baseball Training", type: "sport" }
-        ],
-        "Friday": [],
-        "Saturday": [],
-        "Sunday": []
-    };
-
-    // 2. SUBJECTS (UPDATED)
+    // 1. SUBJECTS (UPDATED)
     const schoolTimetable = {
         "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double School of Rock", "🏆 APS Sport"],
         "Tuesday": ["📢 PC", "📖 Double English", "🧘 Assembly", "🧮 Maths", "🥗 Future Foods", "🏃 PE", "🕊️ RaVE", "🧪 Science"],
         "Wednesday": ["📢 PC", "🧮 Double Maths", "📖 English", "🌍 Double Humanities", "🎸 School of Rock", "🧪 Science", "🇨🇳 Chinese"],
         "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Future Foods"],
-        "Friday": ["🧪 Double Science", "📖 English", "🇨🇳 Chinese", "🏆 Sport"], /* Changed from Double Sport to Sport */
+        "Friday": ["🧪 Double Science", "📖 English", "🇨🇳 Chinese", "🏆 Sport"], 
         "Saturday": ["🎉 No School", "🎮 Relax", "🧹 Clean Room"],
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
     };
 
-    // 3. CHORES
+    // 2. CHORES
     const dailyChores = {
         "Monday": "Empty Dishwasher",
         "Tuesday": "Take out Bins",
@@ -268,7 +224,7 @@
         "Sunday": "Iron Uniforms"
     };
 
-    // 4. UNIFORMS
+    // 3. UNIFORMS
     const schoolUniforms = {
         "Monday": "Sports PE",
         "Tuesday": "Formal Grey",
@@ -317,58 +273,7 @@
         }
     }
 
-    function generateCalendar() {
-        const container = document.getElementById("schedule-container");
-        container.innerHTML = "";
-        
-        const today = new Date();
-        
-        // Loop for 4 days
-        for (let i = 0; i < 4; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            
-            const dayName = daysOfWeek[date.getDay()];
-            const shortDate = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            
-            // Determine Header Label
-            let headerLabel = dayName;
-            if (i === 0) headerLabel = "Today";
-            if (i === 1) headerLabel = "Tomorrow";
-            if (i > 1) headerLabel = dayName.substring(0, 3); 
-
-            // Create Column
-            const col = document.createElement("div");
-            col.className = "day-column";
-            
-            const header = document.createElement("div");
-            header.className = "day-header";
-            header.innerHTML = `<span class="day-name">${headerLabel}</span> <span class="day-date">${shortDate}</span>`;
-            col.appendChild(header);
-
-            // Get events for this day
-            const events = weeklySchedule[dayName] || [];
-            
-            if (events.length === 0) {
-                const empty = document.createElement("div");
-                empty.className = "event-card tag-other";
-                empty.style.opacity = "0.5";
-                empty.innerHTML = `<div class="event-title">Free Day</div>`;
-                col.appendChild(empty);
-            } else {
-                events.forEach(evt => {
-                    const card = document.createElement("div");
-                    card.className = `event-card tag-${evt.type}`;
-                    card.innerHTML = `<div class="event-time">${evt.time}</div><div class="event-title">${evt.title}</div>`;
-                    col.appendChild(card);
-                });
-            }
-            container.appendChild(col);
-        }
-    }
-
     updateSchoolData();
-    generateCalendar();
 
     // CLOCK
     function updateClock() {
@@ -378,7 +283,6 @@
         
         if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
             updateSchoolData();
-            generateCalendar();
         }
     }
     setInterval(updateClock, 1000);
