@@ -162,8 +162,9 @@
         #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
         .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
         
-        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2.5vh; flex-grow: 1;}
-        li { font-size: 3.2vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
+        /* Adjusted list to handle more subjects without overflowing */
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5vh; flex-grow: 1; overflow-y: auto;}
+        li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
         li:last-child { border-bottom: none; }
 
         .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
@@ -229,7 +230,6 @@
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
     // 1. WEEKLY SCHEDULE
-    // Updated with Baseball and Fiona/Annie event
     const weeklySchedule = {
         "Monday": [],
         "Tuesday": [
@@ -246,13 +246,13 @@
         "Sunday": []
     };
 
-    // 2. SUBJECTS
+    // 2. SUBJECTS (UPDATED)
     const schoolTimetable = {
-        "Monday": ["🧮 Maths", "📖 English", "🧪 Science", "⚽ Sport"],
-        "Tuesday": ["🎨 Art", "🗺️ Geography", "🧮 Maths", "💻 Digital Tech"],
-        "Wednesday": ["🧪 Science", "🏃 PE", "📖 English", "📜 History"],
-        "Thursday": ["🧮 Maths", "🔨 Woodwork", "💻 Digital Tech", "📖 English"],
-        "Friday": ["⚽ Sport", "🧪 Science", "🎨 Art", "🧘 Assembly"],
+        "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double School of Rock", "🏆 APS Sport"],
+        "Tuesday": ["📢 PC", "📖 Double English", "🧘 Assembly", "🧮 Maths", "🥗 Future Foods", "🏃 PE", "🕊️ RaVE", "🧪 Science"],
+        "Wednesday": ["📢 PC", "🧮 Double Maths", "📖 English", "🌍 Double Humanities", "🎸 School of Rock", "🧪 Science", "🇨🇳 Chinese"],
+        "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Future Foods"],
+        "Friday": ["🧪 Double Science", "📖 English", "🇨🇳 Chinese", "🏆 Sport"], /* Changed from Double Sport to Sport */
         "Saturday": ["🎉 No School", "🎮 Relax", "🧹 Clean Room"],
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
     };
