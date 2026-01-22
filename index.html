@@ -115,7 +115,7 @@
             display: block;
         }
 
-        /* BOTTOM CENTER: MLB WIDGET (New) */
+        /* BOTTOM CENTER: MLB HUB */
         .mlb-box {
             grid-column: 2; 
             grid-row: 3;
@@ -328,11 +328,10 @@
     fetchRate();
     setInterval(fetchRate, 3600000); 
 
-    // --- MLB LOGIC ---
+    // --- MLB LOGIC (UPDATED WITH ROBUST PROXY) ---
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
     
     function updateMLB() {
-        // 1. Countdown
         const now = new Date().getTime();
         const diff = openingDay - now;
         const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
@@ -340,33 +339,49 @@
     }
     updateMLB();
 
-    // 2. MLB News Fetch
     async function fetchMLBNews() {
         try {
-            const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.mlb.com/feeds/news/rss.xml');
+            // Use 'AllOrigins' proxy which is much more reliable than rss2json
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.mlb.com/feeds/news/rss.xml');
+            
+            const res = await fetch(proxyUrl);
             const data = await res.json();
+            
+            // Parse XML manually (more reliable)
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+            const items = xmlDoc.querySelectorAll("item");
+            
             const list = document.getElementById('mlb-news');
             list.innerHTML = "";
             
-            // Show top 3 headlines
-            data.items.slice(0, 3).forEach(item => {
-                const li = document.createElement('li');
-                li.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
-                li.style.paddingBottom = "1vh";
-                
-                // Clean up title
-                let title = item.title;
-                if(title.length > 55) title = title.substring(0, 55) + "...";
-                
-                li.innerText = title;
-                list.appendChild(li);
-            });
+            // Loop through top 3 items
+            for (let i = 0; i < 3; i++) {
+                if (items[i]) {
+                    let title = items[i].querySelector("title").textContent;
+                    // Truncate if super long
+                    if(title.length > 55) title = title.substring(0, 55) + "...";
+
+                    const li = document.createElement('li');
+                    li.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
+                    li.style.paddingBottom = "1vh";
+                    li.innerText = title;
+                    list.appendChild(li);
+                }
+            }
+
         } catch (error) {
-            document.getElementById('mlb-news').innerHTML = "<li style='opacity:0.5'>News unavailable</li>";
+            // FALLBACK: If news fails (e.g. internet down), show Key Dates instead
+            const list = document.getElementById('mlb-news');
+            list.innerHTML = `
+                <li style="color: #aaa; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1vh;">Pitchers/Catchers Report: Feb 14</li>
+                <li style="color: #aaa; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1vh;">Spring Games Begin: Feb 20</li>
+                <li style="color: #aaa;">Regular Season Start: Mar 26</li>
+            `;
         }
     }
     fetchMLBNews();
-    setInterval(fetchMLBNews, 3600000); // Update news hourly
+    setInterval(fetchMLBNews, 3600000); // Check every hour
 
     // BACKGROUNDS
     const images = [
