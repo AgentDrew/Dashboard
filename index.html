@@ -7,6 +7,7 @@
     
     <style>
         :root {
+            /* TV SAFE ZONE */
             --safe-margin: 2vw; 
         }
 
@@ -97,9 +98,9 @@
             transform-origin: center top;
         }
 
-        /* BOTTOM LEFT: CALENDAR (Smaller now) */
+        /* BOTTOM LEFT: GOOGLE CALENDAR */
         .calendar-box {
-            grid-column: 1; /* Only Column 1 */
+            grid-column: 1; 
             grid-row: 3;
             padding: 0; 
             overflow: hidden; 
@@ -114,13 +115,12 @@
             display: block;
         }
 
-        /* BOTTOM CENTER: PLACEHOLDER (New Widget Spot) */
-        .placeholder-box {
-            grid-column: 2; /* Only Column 2 */
+        /* BOTTOM CENTER: MLB WIDGET (New) */
+        .mlb-box {
+            grid-column: 2; 
             grid-row: 3;
-            justify-content: center;
-            align-items: center;
-            opacity: 0.7;
+            overflow: hidden;
+            position: relative;
         }
 
         /* Typography */
@@ -200,9 +200,14 @@
         <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <div class="box placeholder-box">
-        <h2>Future Widget</h2>
-        <div style="font-size: 5vh; opacity: 0.5;">➕</div>
+    <div class="box mlb-box">
+        <h2 style="margin-bottom:1vh; color:#e53935; display:flex; justify-content:space-between;">
+            <span>MLB ⚾</span>
+            <span style="color:white; font-size: 2vh;">Opening Day: <span id="mlb-days">...</span> days</span>
+        </h2>
+        <ul id="mlb-news" style="font-size: 2.2vh; gap: 1.5vh;">
+            <li style="opacity:0.6;">Loading MLB News...</li>
+        </ul>
     </div>
 
 </div>
@@ -212,7 +217,7 @@
     const schoolStartDate = new Date("2026-01-28T00:00:00"); 
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     
-    // 1. SUBJECTS (UPDATED)
+    // 1. SUBJECTS
     const schoolTimetable = {
         "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double School of Rock", "🏆 APS Sport"],
         "Tuesday": ["📢 PC", "📖 Double English", "🧘 Assembly", "🧮 Maths", "🥗 Future Foods", "🏃 PE", "🕊️ RaVE", "🧪 Science"],
@@ -298,7 +303,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // COUNTDOWN
+    // COUNTDOWN (Japan)
     const targetDate = new Date("2026-06-18T00:00:00").getTime();
     function updateCountdown() {
         const now = new Date().getTime();
@@ -322,6 +327,46 @@
     }
     fetchRate();
     setInterval(fetchRate, 3600000); 
+
+    // --- MLB LOGIC ---
+    const openingDay = new Date("2026-03-26T00:00:00").getTime();
+    
+    function updateMLB() {
+        // 1. Countdown
+        const now = new Date().getTime();
+        const diff = openingDay - now;
+        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        document.getElementById('mlb-days').innerText = days > 0 ? days : "0";
+    }
+    updateMLB();
+
+    // 2. MLB News Fetch
+    async function fetchMLBNews() {
+        try {
+            const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.mlb.com/feeds/news/rss.xml');
+            const data = await res.json();
+            const list = document.getElementById('mlb-news');
+            list.innerHTML = "";
+            
+            // Show top 3 headlines
+            data.items.slice(0, 3).forEach(item => {
+                const li = document.createElement('li');
+                li.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
+                li.style.paddingBottom = "1vh";
+                
+                // Clean up title
+                let title = item.title;
+                if(title.length > 55) title = title.substring(0, 55) + "...";
+                
+                li.innerText = title;
+                list.appendChild(li);
+            });
+        } catch (error) {
+            document.getElementById('mlb-news').innerHTML = "<li style='opacity:0.5'>News unavailable</li>";
+        }
+    }
+    fetchMLBNews();
+    setInterval(fetchMLBNews, 3600000); // Update news hourly
 
     // BACKGROUNDS
     const images = [
