@@ -7,7 +7,6 @@
     
     <style>
         :root {
-            /* TV SAFE ZONE: Adjust this if edges are still cut off */
             --safe-margin: 2vw; 
         }
 
@@ -80,7 +79,7 @@
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* WEATHER: Tall Column on the Right */
+        /* WEATHER: Tall Column on the Right (Row 2 + 3) */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -98,25 +97,30 @@
             transform-origin: center top;
         }
 
-        /* GOOGLE CALENDAR BOX (Dark Mode Trick) */
+        /* BOTTOM LEFT: CALENDAR (Smaller now) */
         .calendar-box {
-            grid-column: 1 / span 2; 
+            grid-column: 1; /* Only Column 1 */
             grid-row: 3;
             padding: 0; 
             overflow: hidden; 
-            
-            /* DARK MODE MAGIC */
             background: #fff; 
             filter: invert(0.9) hue-rotate(180deg);
             border-radius: 12px;
         }
-
-        /* Forces the Google iframe to fill the box */
         .calendar-box iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+        }
+
+        /* BOTTOM CENTER: PLACEHOLDER (New Widget Spot) */
+        .placeholder-box {
+            grid-column: 2; /* Only Column 2 */
+            grid-row: 3;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.7;
         }
 
         /* Typography */
@@ -195,6 +199,12 @@
     <div class="box calendar-box">
         <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     </div>
+
+    <div class="box placeholder-box">
+        <h2>Future Widget</h2>
+        <div style="font-size: 5vh; opacity: 0.5;">➕</div>
+    </div>
+
 </div>
 
 <script>
