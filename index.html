@@ -41,8 +41,8 @@
             display: grid;
             /* Columns: 35% | 35% | 30% (Weather) */
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header (20vh) | Middle (Auto) | Bottom (25vh) */
-            grid-template-rows: 20vh 1fr 25vh;
+            /* Rows: Header (18%) | Middle (Auto) | Bottom (TALLER: 40%) */
+            grid-template-rows: 18vh 1fr 40vh;
             gap: 2vh; 
             height: 100%;
             width: 100%;
@@ -80,7 +80,7 @@
         .routine-box { grid-column: 1; grid-row: 2; }
         .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* WEATHER: Tall Column on the Right (Row 2 + 3) */
+        /* WEATHER: Spans Row 2 & 3 */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -105,6 +105,7 @@
             padding: 0; 
             overflow: hidden; 
             background: #fff; 
+            /* Invert colors for Dark Mode look */
             filter: invert(0.9) hue-rotate(180deg);
             border-radius: 12px;
         }
@@ -303,7 +304,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // COUNTDOWN (Japan)
+    // COUNTDOWN
     const targetDate = new Date("2026-06-18T00:00:00").getTime();
     function updateCountdown() {
         const now = new Date().getTime();
@@ -328,7 +329,7 @@
     fetchRate();
     setInterval(fetchRate, 3600000); 
 
-    // --- MLB LOGIC (UPDATED WITH ROBUST PROXY) ---
+    // --- MLB LOGIC ---
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
     
     function updateMLB() {
@@ -341,13 +342,11 @@
 
     async function fetchMLBNews() {
         try {
-            // Use 'AllOrigins' proxy which is much more reliable than rss2json
             const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.mlb.com/feeds/news/rss.xml');
             
             const res = await fetch(proxyUrl);
             const data = await res.json();
             
-            // Parse XML manually (more reliable)
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(data.contents, "text/xml");
             const items = xmlDoc.querySelectorAll("item");
@@ -355,11 +354,9 @@
             const list = document.getElementById('mlb-news');
             list.innerHTML = "";
             
-            // Loop through top 3 items
             for (let i = 0; i < 3; i++) {
                 if (items[i]) {
                     let title = items[i].querySelector("title").textContent;
-                    // Truncate if super long
                     if(title.length > 55) title = title.substring(0, 55) + "...";
 
                     const li = document.createElement('li');
@@ -371,7 +368,6 @@
             }
 
         } catch (error) {
-            // FALLBACK: If news fails (e.g. internet down), show Key Dates instead
             const list = document.getElementById('mlb-news');
             list.innerHTML = `
                 <li style="color: #aaa; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1vh;">Pitchers/Catchers Report: Feb 14</li>
@@ -381,7 +377,7 @@
         }
     }
     fetchMLBNews();
-    setInterval(fetchMLBNews, 3600000); // Check every hour
+    setInterval(fetchMLBNews, 3600000); 
 
     // BACKGROUNDS
     const images = [
