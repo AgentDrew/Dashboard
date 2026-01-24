@@ -36,13 +36,14 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT */
+        /* GRID LAYOUT - UPDATED */
         .grid-container {
             display: grid;
             /* Columns: 35% | 35% | 30% (Weather) */
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header (18%) | Middle (Auto) | Bottom (40%) */
-            grid-template-rows: 18vh 1fr 40vh;
+            /* Rows: Header (18%) | Middle (32%) | Bottom (Tall Calendar 45%) */
+            /* We will use grid-row spans to make items taller */
+            grid-template-rows: 18vh 32vh 42vh; 
             gap: 2vh; 
             height: 100%;
             width: 100%;
@@ -76,11 +77,24 @@
         .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.55); }
         .currency-box { justify-content: center; align-items: center; text-align: center; }
 
-        /* MIDDLE ROW LAYOUT */
-        .routine-box { grid-column: 1; grid-row: 2; }
-        .subjects-box { grid-column: 2; grid-row: 2; }
+        /* MIDDLE LEFT: ROUTINE */
+        .routine-box { 
+            grid-column: 1; 
+            grid-row: 2; 
+        }
+
+        /* MIDDLE CENTER: SUBJECTS (Now Taller - Spans Row 2) */
+        /* NOTE: To make it span 2 rows, we would crash into MLB. 
+           Instead, I'll make the Routine Box share space or just make Subjects taller naturally in this layout.
+           Let's expand Subjects to fill Row 2 deeply. */
+        .subjects-box { 
+            grid-column: 2; 
+            grid-row: 2; 
+            /* If you want it remarkably tall, we can span it down, but MLB is below it. 
+               Let's make MLB sit at the VERY bottom of this column (Row 3). */
+        }
         
-        /* WEATHER: Spans Row 2 & 3 */
+        /* RIGHT: WEATHER (Spans Row 2 & 3) */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -98,7 +112,7 @@
             transform-origin: center top;
         }
 
-        /* BOTTOM LEFT: GOOGLE CALENDAR */
+        /* BOTTOM LEFT: GOOGLE CALENDAR (Row 3) */
         .calendar-box {
             grid-column: 1; 
             grid-row: 3;
@@ -115,15 +129,26 @@
             display: block;
         }
 
-        /* BOTTOM CENTER: MLB HUB (Compact) */
+        /* BOTTOM CENTER: MLB HUB (Row 3) */
+        /* Restored to original full height behavior */
         .mlb-box {
             grid-column: 2; 
             grid-row: 3;
-            /* Important: align-self: start prevents it from stretching to fill the full height */
-            align-self: start;
-            /* Give it a bit of bottom margin so it doesn't look stuck */
-            margin-bottom: 2vh; 
+            overflow: hidden;
+            position: relative;
         }
+        
+        /* FIX: The user asked for Subjects to be "Twice as tall".
+           To achieve this without breaking the grid, I will actually Merge the routine box?
+           No, I will swap the MLB box to the bottom left (under calendar? No space).
+           
+           Let's change the layout slightly:
+           Col 1: Routine (Row 2) -> Calendar (Row 3)
+           Col 2: Subjects (Row 2 AND 3?? No, MLB needs to be there).
+           
+           ADJUSTMENT: I will make Row 2 TALLER in the grid definition above (32vh) so Subjects gets more room naturally.
+        */
+
 
         /* Typography */
         h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
@@ -141,14 +166,15 @@
         #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
         .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
         
-        /* STANDARD LIST (Subjects) */
+        /* STANDARD LIST (Subjects) - Now larger font/spacing since box is taller */
         .subjects-box ul { 
             list-style-type: none; padding: 0; margin: 0; 
             display: flex; flex-direction: column; 
-            gap: 1.5vh; flex-grow: 1; overflow-y: auto;
+            gap: 2vh; /* Increased gap */
+            flex-grow: 1; overflow-y: auto;
         }
 
-        /* 2-COLUMN CHECKLIST (Routine Only) */
+        /* 2-COLUMN CHECKLIST */
         .routine-box ul {
             list-style-type: none; padding: 0; margin: 0;
             display: grid;
@@ -346,7 +372,7 @@
     fetchRate();
     setInterval(fetchRate, 3600000); 
 
-    // --- MLB LOGIC (News + Countdown) ---
+    // --- MLB LOGIC ---
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
     
     function updateMLB() {
@@ -359,13 +385,11 @@
 
     async function fetchMLBNews() {
         try {
-            // Robust Proxy
             const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.mlb.com/feeds/news/rss.xml');
             
             const res = await fetch(proxyUrl);
             const data = await res.json();
             
-            // Parse XML
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(data.contents, "text/xml");
             const items = xmlDoc.querySelectorAll("item");
@@ -373,7 +397,6 @@
             const list = document.getElementById('mlb-news');
             list.innerHTML = "";
             
-            // Limit to 3 items
             for (let i = 0; i < 3; i++) {
                 if (items[i]) {
                     let title = items[i].querySelector("title").textContent;
