@@ -32,18 +32,17 @@
             content: "";
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.45); 
+            background: rgba(0, 0, 0, 0.35); 
             z-index: -1;
         }
 
-        /* GRID LAYOUT - RESTORED */
+        /* GRID LAYOUT */
         .grid-container {
             display: grid;
             /* Columns: 35% | 35% | 30% (Weather) */
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header (16%) | Middle (31%) | Bottom (43%) */
-            /* Adjusted slightly to ensure it stays ON SCREEN */
-            grid-template-rows: 16vh 31vh 43vh; 
+            /* Rows: Header (20vh) | Middle (Auto) | Bottom (25vh) */
+            grid-template-rows: 20vh 1fr 25vh;
             gap: 2vh; 
             height: 100%;
             width: 100%;
@@ -77,19 +76,11 @@
         .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.55); }
         .currency-box { justify-content: center; align-items: center; text-align: center; }
 
-        /* MIDDLE LEFT: ROUTINE */
-        .routine-box { 
-            grid-column: 1; 
-            grid-row: 2; 
-        }
-
-        /* MIDDLE CENTER: SUBJECTS */
-        .subjects-box { 
-            grid-column: 2; 
-            grid-row: 2; 
-        }
+        /* MIDDLE ROW LAYOUT */
+        .routine-box { grid-column: 1; grid-row: 2; }
+        .subjects-box { grid-column: 2; grid-row: 2; }
         
-        /* RIGHT: WEATHER (Spans Row 2 & 3) */
+        /* WEATHER: Tall Column on the Right (Row 2 + 3) */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -107,7 +98,7 @@
             transform-origin: center top;
         }
 
-        /* BOTTOM LEFT: GOOGLE CALENDAR (Row 3) */
+        /* BOTTOM LEFT: GOOGLE CALENDAR */
         .calendar-box {
             grid-column: 1; 
             grid-row: 3;
@@ -124,7 +115,7 @@
             display: block;
         }
 
-        /* BOTTOM CENTER: MLB HUB (Row 3) */
+        /* BOTTOM CENTER: MLB HUB */
         .mlb-box {
             grid-column: 2; 
             grid-row: 3;
@@ -133,40 +124,23 @@
         }
 
         /* Typography */
-        h2 { margin: 0 0 1vh 0; font-size: 2.2vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        #clock { font-size: 9vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
-        #date { font-size: 2.2vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #clock { font-size: 10vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+        #date { font-size: 2.5vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         
         #countdown { font-size: 7vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
-        .sub-text { font-size: 1.8vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        .sub-text { font-size: 2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
 
         .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2vh; margin-bottom: 0; color: #aaa;}
-        #yen-rate { font-size: 5vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 0; }
+        #yen-rate { font-size: 6vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 0; }
         
-        #todays-uniform { font-size: 2.5vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
-        .uniform-icon { font-size: 5vh; margin-bottom: 0; display: block; }
+        #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
+        .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
         
-        /* STANDARD LIST (Subjects) */
-        .subjects-box ul { 
-            list-style-type: none; padding: 0; margin: 0; 
-            display: flex; flex-direction: column; 
-            gap: 1vh; 
-            flex-grow: 1; overflow-y: auto;
-        }
-
-        /* 2-COLUMN CHECKLIST */
-        .routine-box ul {
-            list-style-type: none; padding: 0; margin: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5vh; 
-            align-content: center;
-            height: 100%;
-        }
-
-        li { font-size: 2.5vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
+        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5vh; flex-grow: 1; overflow-y: auto;}
+        li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
         li:last-child { border-bottom: none; }
 
         .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
@@ -207,7 +181,7 @@
             <li><span class="icon">🍱</span> Pack Lunch</li>
             <li><span class="icon">🦷</span> Brush Teeth</li>
             <li><span class="icon">🎒</span> Pack Bag</li>
-            <li class="daily-chore" style="grid-column: span 2;"><span class="icon">⚠️</span> <span id="todays-chore">Loading Chore...</span></li>
+            <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading Chore...</span></li>
         </ul>
     </div>
 
@@ -245,10 +219,10 @@
     
     // 1. SUBJECTS
     const schoolTimetable = {
-        "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double Rock", "🏆 APS Sport"],
+        "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double School of Rock", "🏆 APS Sport"],
         "Tuesday": ["📢 PC", "📖 Double English", "🧘 Assembly", "🧮 Maths", "🥗 Future Foods", "🏃 PE", "🕊️ RaVE", "🧪 Science"],
         "Wednesday": ["📢 PC", "🧮 Double Maths", "📖 English", "🌍 Double Humanities", "🎸 School of Rock", "🧪 Science", "🇨🇳 Chinese"],
-        "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Foods"],
+        "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Future Foods"],
         "Friday": ["🧪 Double Science", "📖 English", "🇨🇳 Chinese", "🏆 Sport"], 
         "Saturday": ["🎉 No School", "🎮 Relax", "🧹 Clean Room"],
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
@@ -329,7 +303,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // COUNTDOWN
+    // COUNTDOWN (Japan)
     const targetDate = new Date("2026-06-18T00:00:00").getTime();
     function updateCountdown() {
         const now = new Date().getTime();
@@ -354,7 +328,7 @@
     fetchRate();
     setInterval(fetchRate, 3600000); 
 
-    // --- MLB LOGIC ---
+    // --- MLB LOGIC (UPDATED WITH ROBUST PROXY) ---
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
     
     function updateMLB() {
@@ -367,11 +341,13 @@
 
     async function fetchMLBNews() {
         try {
+            // Use 'AllOrigins' proxy which is much more reliable than rss2json
             const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.mlb.com/feeds/news/rss.xml');
             
             const res = await fetch(proxyUrl);
             const data = await res.json();
             
+            // Parse XML manually (more reliable)
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(data.contents, "text/xml");
             const items = xmlDoc.querySelectorAll("item");
@@ -379,9 +355,11 @@
             const list = document.getElementById('mlb-news');
             list.innerHTML = "";
             
+            // Loop through top 3 items
             for (let i = 0; i < 3; i++) {
                 if (items[i]) {
                     let title = items[i].querySelector("title").textContent;
+                    // Truncate if super long
                     if(title.length > 55) title = title.substring(0, 55) + "...";
 
                     const li = document.createElement('li');
@@ -393,6 +371,7 @@
             }
 
         } catch (error) {
+            // FALLBACK: If news fails (e.g. internet down), show Key Dates instead
             const list = document.getElementById('mlb-news');
             list.innerHTML = `
                 <li style="color: #aaa; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1vh;">Pitchers/Catchers Report: Feb 14</li>
@@ -402,7 +381,7 @@
         }
     }
     fetchMLBNews();
-    setInterval(fetchMLBNews, 3600000); 
+    setInterval(fetchMLBNews, 3600000); // Check every hour
 
     // BACKGROUNDS
     const images = [
