@@ -7,7 +7,6 @@
     
     <style>
         :root {
-            /* TV SAFE ZONE */
             --safe-margin: 2vw; 
         }
 
@@ -27,7 +26,6 @@
             overflow: hidden; 
         }
 
-        /* Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -36,19 +34,17 @@
             z-index: -1;
         }
 
-        /* GRID LAYOUT */
+        /* GRID LAYOUT - SAFE MODE */
         .grid-container {
             display: grid;
-            /* Columns: 35% | 35% | 30% (Weather) */
             grid-template-columns: 35fr 35fr 30fr; 
-            /* Rows: Header (20vh) | Middle (Auto) | Bottom (25vh) */
-            grid-template-rows: 20vh 1fr 25vh;
+            /* 1fr calculates remaining space automatically so it never overflows */
+            grid-template-rows: 16vh 1fr 22vh; 
             gap: 2vh; 
             height: 100%;
             width: 100%;
         }
 
-        /* HEADER */
         .header-row {
             grid-column: 1 / -1; 
             grid-row: 1;
@@ -57,11 +53,10 @@
             gap: 2vh;
         }
 
-        /* GENERIC BOX */
         .box {
-            background: rgba(0, 0, 0, 0.45); 
-            backdrop-filter: blur(8px); 
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.55); /* Slightly darker for better contrast */
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.15); 
             border-radius: 16px; 
             padding: 1.5vh; 
@@ -70,17 +65,46 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
         }
 
-        /* HEADER SPECIFIC */
         .time-box { justify-content: center; align-items: center; }
         .countdown-box { justify-content: center; align-items: center; text-align: center; }
-        .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.55); }
+        .uniform-box { justify-content: center; align-items: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
         .currency-box { justify-content: center; align-items: center; text-align: center; }
 
-        /* MIDDLE ROW LAYOUT */
-        .routine-box { grid-column: 1; grid-row: 2; }
-        .subjects-box { grid-column: 2; grid-row: 2; }
+        /* --- THE LAYOUT SWAP --- */
         
-        /* WEATHER: Tall Column on the Right (Row 2 + 3) */
+        /* 1. CALENDAR (Moved to Middle/Big Row) */
+        .calendar-box {
+            grid-column: 1; 
+            grid-row: 2; /* Big Row */
+            padding: 0; 
+            overflow: hidden; 
+            background: #fff; 
+            filter: invert(0.9) hue-rotate(180deg);
+            border-radius: 12px;
+        }
+        .calendar-box iframe { width: 100%; height: 100%; border: none; }
+
+        /* 2. ROUTINE (Moved to Bottom/Small Row) */
+        .routine-box { 
+            grid-column: 1; 
+            grid-row: 3; /* Small Row */
+        }
+
+        /* 3. SUBJECTS (Stays Middle/Big Row) */
+        .subjects-box { 
+            grid-column: 2; 
+            grid-row: 2; 
+        }
+        
+        /* 4. MLB (Stays Bottom/Small Row) */
+        .mlb-box {
+            grid-column: 2; 
+            grid-row: 3;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* WEATHER (Spans Middle + Bottom) */
         .weather-box { 
             grid-column: 3; 
             grid-row: 2 / span 2; 
@@ -90,61 +114,52 @@
         }
 
         .weather-box iframe {
-            width: 100%; 
-            height: 100%;
-            border: none;
-            display: block;
-            transform: scale(1.1);
-            transform-origin: center top;
-        }
-
-        /* BOTTOM LEFT: GOOGLE CALENDAR */
-        .calendar-box {
-            grid-column: 1; 
-            grid-row: 3;
-            padding: 0; 
-            overflow: hidden; 
-            background: #fff; 
-            filter: invert(0.9) hue-rotate(180deg);
-            border-radius: 12px;
-        }
-        .calendar-box iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-
-        /* BOTTOM CENTER: MLB WIDGET (New) */
-        .mlb-box {
-            grid-column: 2; 
-            grid-row: 3;
-            overflow: hidden;
-            position: relative;
+            width: 100%; height: 100%; border: none; display: block;
+            transform: scale(1.05); transform-origin: center top;
         }
 
         /* Typography */
-        h2 { margin: 0 0 1vh 0; font-size: 2.5vh; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        h2 { margin: 0 0 1vh 0; font-size: 2.2vh; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .big-text { font-size: 4vh; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         
-        #clock { font-size: 10vh; font-weight: bold; line-height: 0.9; letter-spacing: -3px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
-        #date { font-size: 2.5vh; color: rgba(255,255,255,0.95); margin-top: 5px; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #clock { font-size: 8vh; font-weight: 800; line-height: 0.9; letter-spacing: -2px; }
+        #date { font-size: 2.2vh; color: rgba(255,255,255,0.7); margin-top: 5px; }
         
-        #countdown { font-size: 7vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; }
-        .sub-text { font-size: 2vh; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        #countdown { font-size: 6vh; line-height: 0.9; margin-bottom: 2px; font-weight: 800; color: #ffeb3b;}
+        .sub-text { font-size: 1.8vh; color: rgba(255,255,255,0.7); }
 
-        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 2vh; margin-bottom: 0; color: #aaa;}
-        #yen-rate { font-size: 6vh; color: #6fcf73; text-shadow: 0 1px 3px rgba(0,0,0,0.6); line-height: 1; margin-bottom: 0; }
+        .currency-box h2, .uniform-box h2 { border-bottom: none; font-size: 1.8vh; margin-bottom: 0; color: #aaa;}
+        #yen-rate { font-size: 5vh; color: #6fcf73; line-height: 1; }
         
         #todays-uniform { font-size: 3vh; font-weight: bold; color: #fff; line-height: 1.1; margin-bottom: 0; }
-        .uniform-icon { font-size: 6vh; margin-bottom: 0; display: block; }
+        .uniform-icon { font-size: 5vh; margin-bottom: 0; display: block; }
         
-        ul { list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5vh; flex-grow: 1; overflow-y: auto;}
-        li { font-size: 2.8vh; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5vh; text-shadow: 0 1px 2px rgba(0,0,0,0.6); font-weight: 500; display: flex; align-items: center; }
-        li:last-child { border-bottom: none; }
+        /* UPDATED LIST STYLES */
+        
+        /* Subjects: Big font, spread out */
+        .subjects-box ul { 
+            list-style-type: none; padding: 0; margin: 0; 
+            display: flex; flex-direction: column; 
+            justify-content: space-evenly; /* Spreads items evenly in the big space */
+            height: 100%;
+        }
+        .subjects-box li {
+            font-size: 3.5vh; /* Larger Text */
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 0;
+        }
 
-        .icon { width: 5vh; display: inline-block; text-align: center; margin-right: 1.5vw; }
-        .daily-chore { color: #ffd700; font-weight: bold; }
+        /* Routine: 2 Columns to fit small space */
+        .routine-box ul {
+            list-style-type: none; padding: 0; margin: 0;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1vh; align-content: center; height: 100%;
+        }
+        .routine-box li { font-size: 2.2vh; border-bottom: none; font-weight: 400; display: flex; align-items: center; }
+        
+        /* Icons */
+        .icon { width: 3vh; display: inline-block; text-align: center; margin-right: 1vw; }
+        .daily-chore { color: #ffd700; font-weight: bold; grid-column: span 2; margin-top: 0.5vh; padding-top: 0.5vh; border-top: 1px solid rgba(255,255,255,0.1); }
 
     </style>
 </head>
@@ -174,14 +189,18 @@
         </div>
     </div>
 
+    <div class="box calendar-box">
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+    </div>
+
     <div class="box routine-box">
         <h2>Morning Checklist</h2>
         <ul>
-            <li><span class="icon">💻</span> Charge Laptop</li>
-            <li><span class="icon">🍱</span> Pack Lunch</li>
-            <li><span class="icon">🦷</span> Brush Teeth</li>
-            <li><span class="icon">🎒</span> Pack Bag</li>
-            <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading Chore...</span></li>
+            <li><span class="icon">💻</span> Charge PC</li>
+            <li><span class="icon">🍱</span> Lunch</li>
+            <li><span class="icon">🦷</span> Teeth</li>
+            <li><span class="icon">🎒</span> Bag</li>
+            <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading...</span></li>
         </ul>
     </div>
 
@@ -192,22 +211,18 @@
         </ul>
     </div>
 
+    <div class="box mlb-box">
+        <h2 style="margin-bottom:0.5vh; color:#e53935; display:flex; justify-content:space-between; align-items:center;">
+            <span>MLB ⚾</span>
+            <span style="color:white; font-size: 1.5vh; opacity:0.7;">Opening Day: <span id="mlb-days">...</span> days</span>
+        </h2>
+        <ul id="mlb-news" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.5vh;">
+            <li style="opacity:0.6; font-size: 2vh;">Loading MLB News...</li>
+        </ul>
+    </div>
+
     <div class="box weather-box">
         <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
-    </div>
-
-    <div class="box calendar-box">
-        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-    </div>
-
-    <div class="box mlb-box">
-        <h2 style="margin-bottom:1vh; color:#e53935; display:flex; justify-content:space-between;">
-            <span>MLB ⚾</span>
-            <span style="color:white; font-size: 2vh;">Opening Day: <span id="mlb-days">...</span> days</span>
-        </h2>
-        <ul id="mlb-news" style="font-size: 2.2vh; gap: 1.5vh;">
-            <li style="opacity:0.6;">Loading MLB News...</li>
-        </ul>
     </div>
 
 </div>
@@ -219,10 +234,10 @@
     
     // 1. SUBJECTS
     const schoolTimetable = {
-        "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double School of Rock", "🏆 APS Sport"],
+        "Monday": ["📢 PC", "🌍 Humanities", "📖 Double English", "🥗 Future Foods", "🕊️ RaVE", "🧮 Maths", "🎸 Double Rock", "🏆 APS Sport"],
         "Tuesday": ["📢 PC", "📖 Double English", "🧘 Assembly", "🧮 Maths", "🥗 Future Foods", "🏃 PE", "🕊️ RaVE", "🧪 Science"],
         "Wednesday": ["📢 PC", "🧮 Double Maths", "📖 English", "🌍 Double Humanities", "🎸 School of Rock", "🧪 Science", "🇨🇳 Chinese"],
-        "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Future Foods"],
+        "Thursday": ["📢 PC", "🎸 School of Rock", "🏃 Double PE", "🧮 Double Maths", "🌍 Humanities", "🥗 Double Foods"],
         "Friday": ["🧪 Double Science", "📖 English", "🇨🇳 Chinese", "🏆 Sport"], 
         "Saturday": ["🎉 No School", "🎮 Relax", "🧹 Clean Room"],
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
@@ -258,7 +273,11 @@
 
         // HOLIDAY CHECK
         if (now < schoolStartDate) {
-            document.getElementById("subject-list").innerHTML = "<li>🎉 School Holidays!</li><li>🎮 Relax</li><li>🏖️ Beach</li>";
+            document.getElementById("subject-list").innerHTML = `
+                <li style="text-align:center; color:#4fc3f7; font-size:5vh;">🎉</li>
+                <li style="text-align:center;">Holiday Mode</li>
+                <li style="text-align:center; font-size:2.5vh; opacity:0.7;">Relax & Recharge</li>
+            `;
             document.getElementById("todays-uniform").textContent = "Casual";
             document.getElementById("uniform-icon").textContent = "👕";
             document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
@@ -303,7 +322,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // COUNTDOWN (Japan)
+    // COUNTDOWN
     const targetDate = new Date("2026-06-18T00:00:00").getTime();
     function updateCountdown() {
         const now = new Date().getTime();
@@ -332,7 +351,6 @@
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
     
     function updateMLB() {
-        // 1. Countdown
         const now = new Date().getTime();
         const diff = openingDay - now;
         const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
@@ -340,7 +358,6 @@
     }
     updateMLB();
 
-    // 2. MLB News Fetch
     async function fetchMLBNews() {
         try {
             const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.mlb.com/feeds/news/rss.xml');
@@ -348,15 +365,14 @@
             const list = document.getElementById('mlb-news');
             list.innerHTML = "";
             
-            // Show top 3 headlines
-            data.items.slice(0, 3).forEach(item => {
+            // Limit to 2 items because the box is smaller now
+            data.items.slice(0, 2).forEach(item => {
                 const li = document.createElement('li');
                 li.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
-                li.style.paddingBottom = "1vh";
+                li.style.paddingBottom = "0.5vh";
                 
-                // Clean up title
                 let title = item.title;
-                if(title.length > 55) title = title.substring(0, 55) + "...";
+                if(title.length > 50) title = title.substring(0, 50) + "...";
                 
                 li.innerText = title;
                 list.appendChild(li);
@@ -366,7 +382,7 @@
         }
     }
     fetchMLBNews();
-    setInterval(fetchMLBNews, 3600000); // Update news hourly
+    setInterval(fetchMLBNews, 3600000); 
 
     // BACKGROUNDS
     const images = [
