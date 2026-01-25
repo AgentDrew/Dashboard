@@ -34,11 +34,11 @@
             z-index: -1;
         }
 
-        /* MASTER GRID - The Fix for Alignment */
+        /* MASTER GRID */
         .master-grid {
             display: grid;
-            /* 3 Perfectly Equal Columns */
-            grid-template-columns: 1fr 1fr 1fr; 
+            /* CHANGED: Left (25%) | Middle (37.5%) | Right (37.5%) */
+            grid-template-columns: 25fr 37.5fr 37.5fr; 
             /* Row 1 (Header 18vh) | Row 2 (Rest of screen) */
             grid-template-rows: 18vh 1fr; 
             gap: 2vh; 
@@ -57,13 +57,11 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
-            /* Critical for alignment: ensures padding doesn't expand width */
             box-sizing: border-box; 
-            min-width: 0; /* Prevents flex items from breaking grid */
+            min-width: 0; 
         }
 
-        /* --- STACKS (For Left & Right Columns) --- */
-        /* These act as containers inside the grid cells to hold multiple widgets */
+        /* --- STACKS --- */
         .stack-container {
             display: flex;
             flex-direction: column;
@@ -73,35 +71,17 @@
             min-width: 0;
         }
 
-        /* --- TOP ROW WIDGETS --- */
+        /* --- TOP ROW POSITIONS --- */
         .countdown-box { grid-column: 1; grid-row: 1; justify-content: center; text-align: center; }
         .time-box      { grid-column: 2; grid-row: 1; justify-content: center; text-align: center; }
         .currency-box  { grid-column: 3; grid-row: 1; justify-content: center; text-align: center; }
 
-        /* --- BOTTOM ROW AREAS --- */
-        
-        /* LEFT STACK (Weather + MLB) */
-        .left-stack { 
-            grid-column: 1; 
-            grid-row: 2; 
-        }
+        /* --- BOTTOM ROW POSITIONS --- */
+        .left-stack    { grid-column: 1; grid-row: 2; }
+        .subjects-box  { grid-column: 2; grid-row: 2; background: rgba(0, 0, 0, 0.7); }
+        .right-stack   { grid-column: 3; grid-row: 2; }
 
-        /* MIDDLE (Subjects - Full Height) */
-        .subjects-box { 
-            grid-column: 2; 
-            grid-row: 2; 
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        /* RIGHT STACK (Checklist + Calendar) */
-        .right-stack { 
-            grid-column: 3; 
-            grid-row: 2; 
-        }
-
-        /* --- WIDGET SPECIFICS --- */
-
-        /* Weather (Top 35% of stack) */
+        /* --- WIDGET SIZING --- */
         .weather-box {
             flex: 0 0 35%; 
             padding: 0; overflow: hidden;
@@ -111,17 +91,9 @@
             transform: scale(1.1); transform-origin: top center;
         }
 
-        /* MLB (Bottom of stack) */
-        .mlb-box {
-            flex: 1; overflow: hidden;
-        }
+        .mlb-box { flex: 1; overflow: hidden; }
+        .routine-box { flex: 0 0 auto; }
 
-        /* Checklist (Auto height) */
-        .routine-box {
-            flex: 0 0 auto;
-        }
-
-        /* Calendar (Fills rest of stack) */
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -150,7 +122,6 @@
         /* List Styles */
         ul { list-style: none; padding: 0; margin: 0; }
 
-        /* Subjects */
         .subjects-box ul {
             display: flex; flex-direction: column;
             justify-content: space-evenly; height: 100%;
@@ -162,13 +133,11 @@
         }
         .subjects-box li:last-child { border-bottom: none; }
 
-        /* Checklist */
         .routine-box ul { display: flex; flex-direction: column; gap: 1.5vh; }
         .routine-box li { font-size: 2.2vh; display: flex; align-items: center; }
         .icon { width: 4vh; text-align: center; margin-right: 1vw; font-size: 2.5vh; }
         .daily-chore { color: #ffd700; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1vh; margin-top: 0.5vh; width: 100%; }
 
-        /* MLB */
         #mlb-news li { font-size: 1.8vh; padding-bottom: 1vh; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0.8;}
 
     </style>
