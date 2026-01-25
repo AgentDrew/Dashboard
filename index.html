@@ -44,18 +44,18 @@
 
         /* 1. TOP HEADER (Countdown | Time | Yen) */
         .header-row {
-            flex: 0 0 18vh; /* Fixed height for top stats */
+            flex: 0 0 18vh; 
             display: grid;
             grid-template-columns: 1fr 1fr 1fr; /* 3 Equal columns */
             gap: 2vh;
         }
 
-        /* 2. MAIN CONTENT (3 Columns below) */
+        /* 2. MAIN CONTENT (3 Equal Columns below) */
         .main-row {
-            flex: 1; /* Fills the rest of the screen */
+            flex: 1; 
             display: grid;
-            /* Left (Weather/MLB) | Middle (Subjects) | Right (Checklist/Cal) */
-            grid-template-columns: 25fr 40fr 35fr; 
+            /* CHANGED: Now matches the header exactly (1fr 1fr 1fr) */
+            grid-template-columns: 1fr 1fr 1fr; 
             gap: 2vh;
             overflow: hidden; 
         }
