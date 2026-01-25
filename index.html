@@ -34,7 +34,7 @@
             z-index: -1;
         }
 
-        /* MASTER LAYOUT: Header Row + Main Row */
+        /* MASTER LAYOUT */
         .dashboard-container {
             display: flex;
             flex-direction: column;
@@ -42,7 +42,7 @@
             height: 100%;
         }
 
-        /* 1. TOP HEADER (Time, Countdown, Yen) */
+        /* 1. TOP HEADER (Countdown | Time | Yen) */
         .header-row {
             flex: 0 0 18vh; /* Fixed height for top stats */
             display: grid;
@@ -57,7 +57,7 @@
             /* Left (Weather/MLB) | Middle (Subjects) | Right (Checklist/Cal) */
             grid-template-columns: 25fr 40fr 35fr; 
             gap: 2vh;
-            overflow: hidden; /* Prevents scroll */
+            overflow: hidden; 
         }
 
         /* COLUMNS inside Main Row */
@@ -110,11 +110,11 @@
 
         /* --- RIGHT WIDGETS (Checklist/Cal) --- */
         .routine-box {
-            flex: 0 0 auto; /* Natural height based on list */
+            flex: 0 0 auto; 
         }
 
         .calendar-box {
-            flex: 1; /* Fills bottom of right column */
+            flex: 1; 
             padding: 0;
             background: #fff;
             filter: invert(0.9) hue-rotate(180deg);
@@ -175,20 +175,24 @@
 <div class="dashboard-container">
 
     <div class="header-row">
-        <div class="box time-box">
-            <div id="clock">--:--</div>
-            <div id="date">Loading...</div>
-        </div>
+        
         <div class="box countdown-box">
             <h2 style="border:none; margin:0; font-size:1.8vh;">Japan Trip 🇯🇵</h2>
             <div class="big-stat" id="countdown">0</div>
             <div class="sub-stat">Days to go</div>
         </div>
+
+        <div class="box time-box">
+            <div id="clock">--:--</div>
+            <div id="date">Loading...</div>
+        </div>
+
         <div class="box currency-box">
             <h2 style="border:none; margin:0; font-size:1.8vh;">AUD to JPY</h2>
             <div id="yen-rate">...</div>
             <div class="sub-stat">1 AUD = ¥<span id="exact-rate">...</span></div>
         </div>
+
     </div>
 
     <div class="main-row">
