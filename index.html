@@ -34,41 +34,19 @@
             z-index: -1;
         }
 
-        /* MASTER LAYOUT */
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2vh;
-            height: 100%;
-        }
-
-        /* 1. TOP HEADER (Countdown | Time | Yen) */
-        .header-row {
-            flex: 0 0 18vh; 
+        /* MASTER GRID - The Fix for Alignment */
+        .master-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* 3 Equal columns */
-            gap: 2vh;
-        }
-
-        /* 2. MAIN CONTENT (3 Equal Columns below) */
-        .main-row {
-            flex: 1; 
-            display: grid;
-            /* CHANGED: Now matches the header exactly (1fr 1fr 1fr) */
+            /* 3 Perfectly Equal Columns */
             grid-template-columns: 1fr 1fr 1fr; 
-            gap: 2vh;
-            overflow: hidden; 
-        }
-
-        /* COLUMNS inside Main Row */
-        .col-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 2vh;
+            /* Row 1 (Header 18vh) | Row 2 (Rest of screen) */
+            grid-template-rows: 18vh 1fr; 
+            gap: 2vh; 
             height: 100%;
+            width: 100%;
         }
 
-        /* GENERIC BOX STYLE */
+        /* --- GENERIC BOX STYLES --- */
         .box {
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(12px); 
@@ -79,40 +57,71 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
+            /* Critical for alignment: ensures padding doesn't expand width */
+            box-sizing: border-box; 
+            min-width: 0; /* Prevents flex items from breaking grid */
         }
 
-        /* --- HEADER WIDGETS --- */
-        .time-box { justify-content: center; align-items: center; }
-        .countdown-box { justify-content: center; align-items: center; text-align: center; }
-        .currency-box { justify-content: center; align-items: center; text-align: center; }
-
-        /* --- LEFT WIDGETS (Weather/MLB) --- */
-        .weather-box {
-            flex: 0 0 35%; /* Top 35% of left column */
-            padding: 0;
+        /* --- STACKS (For Left & Right Columns) --- */
+        /* These act as containers inside the grid cells to hold multiple widgets */
+        .stack-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            height: 100%;
             overflow: hidden;
+            min-width: 0;
+        }
+
+        /* --- TOP ROW WIDGETS --- */
+        .countdown-box { grid-column: 1; grid-row: 1; justify-content: center; text-align: center; }
+        .time-box      { grid-column: 2; grid-row: 1; justify-content: center; text-align: center; }
+        .currency-box  { grid-column: 3; grid-row: 1; justify-content: center; text-align: center; }
+
+        /* --- BOTTOM ROW AREAS --- */
+        
+        /* LEFT STACK (Weather + MLB) */
+        .left-stack { 
+            grid-column: 1; 
+            grid-row: 2; 
+        }
+
+        /* MIDDLE (Subjects - Full Height) */
+        .subjects-box { 
+            grid-column: 2; 
+            grid-row: 2; 
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* RIGHT STACK (Checklist + Calendar) */
+        .right-stack { 
+            grid-column: 3; 
+            grid-row: 2; 
+        }
+
+        /* --- WIDGET SPECIFICS --- */
+
+        /* Weather (Top 35% of stack) */
+        .weather-box {
+            flex: 0 0 35%; 
+            padding: 0; overflow: hidden;
         }
         .weather-box iframe {
             width: 100%; height: 100%; border: none;
             transform: scale(1.1); transform-origin: top center;
         }
 
+        /* MLB (Bottom of stack) */
         .mlb-box {
-            flex: 1; /* Fills bottom of left column */
-            overflow: hidden;
+            flex: 1; overflow: hidden;
         }
 
-        /* --- MIDDLE WIDGETS (Subjects) --- */
-        .subjects-box {
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        /* --- RIGHT WIDGETS (Checklist/Cal) --- */
+        /* Checklist (Auto height) */
         .routine-box {
-            flex: 0 0 auto; 
+            flex: 0 0 auto;
         }
 
+        /* Calendar (Fills rest of stack) */
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -130,7 +139,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;
         }
 
-        /* Header specific text */
         #clock { font-size: 8vh; font-weight: 800; line-height: 0.9; letter-spacing: -2px; }
         #date { font-size: 2.2vh; color: rgba(255,255,255,0.8); }
         
@@ -139,12 +147,13 @@
         
         #yen-rate { font-size: 6vh; color: #6fcf73; font-weight: 800; line-height: 1;}
 
-        /* Subject List */
+        /* List Styles */
+        ul { list-style: none; padding: 0; margin: 0; }
+
+        /* Subjects */
         .subjects-box ul {
-            list-style: none; padding: 0; margin: 0;
             display: flex; flex-direction: column;
-            justify-content: space-evenly; 
-            height: 100%;
+            justify-content: space-evenly; height: 100%;
         }
         .subjects-box li {
             font-size: 4vh; 
@@ -154,14 +163,8 @@
         .subjects-box li:last-child { border-bottom: none; }
 
         /* Checklist */
-        .routine-box ul {
-            list-style: none; padding: 0; margin: 0;
-            display: flex; flex-direction: column; gap: 1.5vh;
-        }
-        .routine-box li {
-            font-size: 2.2vh; 
-            display: flex; align-items: center;
-        }
+        .routine-box ul { display: flex; flex-direction: column; gap: 1.5vh; }
+        .routine-box li { font-size: 2.2vh; display: flex; align-items: center; }
         .icon { width: 4vh; text-align: center; margin-right: 1vw; font-size: 2.5vh; }
         .daily-chore { color: #ffd700; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1vh; margin-top: 0.5vh; width: 100%; }
 
@@ -172,77 +175,68 @@
 </head>
 <body>
 
-<div class="dashboard-container">
+<div class="master-grid">
 
-    <div class="header-row">
-        
-        <div class="box countdown-box">
-            <h2 style="border:none; margin:0; font-size:1.8vh;">Japan Trip 🇯🇵</h2>
-            <div class="big-stat" id="countdown">0</div>
-            <div class="sub-stat">Days to go</div>
-        </div>
-
-        <div class="box time-box">
-            <div id="clock">--:--</div>
-            <div id="date">Loading...</div>
-        </div>
-
-        <div class="box currency-box">
-            <h2 style="border:none; margin:0; font-size:1.8vh;">AUD to JPY</h2>
-            <div id="yen-rate">...</div>
-            <div class="sub-stat">1 AUD = ¥<span id="exact-rate">...</span></div>
-        </div>
-
+    <div class="box countdown-box">
+        <h2 style="border:none; margin:0; font-size:1.8vh;">Japan Trip 🇯🇵</h2>
+        <div class="big-stat" id="countdown">0</div>
+        <div class="sub-stat">Days to go</div>
     </div>
 
-    <div class="main-row">
-        
-        <div class="col-stack">
-            <div class="box weather-box">
-                <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
-            </div>
-            <div class="box mlb-box">
-                <h2 style="color:#e53935; display:flex; justify-content:space-between;">
-                    <span>MLB ⚾</span>
-                    <span style="font-size: 1.5vh; color:#fff; opacity:0.7;">Start: <span id="mlb-days">0</span>d</span>
-                </h2>
-                <ul id="mlb-news" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:1vh;">
-                    <li>Loading News...</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-stack">
-            <div class="box subjects-box">
-                <h2>Today's Subjects</h2>
-                <ul id="subject-list">
-                    <li>Loading...</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-stack">
-            <div class="box routine-box">
-                <h2 style="display:flex; justify-content:space-between; align-items:center;">
-                    Checklist
-                    <span style="font-size:1.6vh; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:4px;">
-                        Wear: <span id="todays-uniform" style="color:#fff;">...</span>
-                    </span>
-                </h2>
-                <ul>
-                    <li><span class="icon">💻</span> Charge Laptop</li>
-                    <li><span class="icon">🍱</span> Pack Lunch</li>
-                    <li><span class="icon">🦷</span> Brush Teeth</li>
-                    <li><span class="icon">🎒</span> Pack Bag</li>
-                    <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading...</span></li>
-                </ul>
-            </div>
-            <div class="box calendar-box">
-                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-            </div>
-        </div>
-
+    <div class="box time-box">
+        <div id="clock">--:--</div>
+        <div id="date">Loading...</div>
     </div>
+
+    <div class="box currency-box">
+        <h2 style="border:none; margin:0; font-size:1.8vh;">AUD to JPY</h2>
+        <div id="yen-rate">...</div>
+        <div class="sub-stat">1 AUD = ¥<span id="exact-rate">...</span></div>
+    </div>
+
+    <div class="stack-container left-stack">
+        <div class="box weather-box">
+            <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
+        </div>
+        <div class="box mlb-box">
+            <h2 style="color:#e53935; display:flex; justify-content:space-between;">
+                <span>MLB ⚾</span>
+                <span style="font-size: 1.5vh; color:#fff; opacity:0.7;">Start: <span id="mlb-days">0</span>d</span>
+            </h2>
+            <ul id="mlb-news" style="display:flex; flex-direction:column; gap:1vh;">
+                <li>Loading News...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="box subjects-box">
+        <h2>Today's Subjects</h2>
+        <ul id="subject-list">
+            <li>Loading...</li>
+        </ul>
+    </div>
+
+    <div class="stack-container right-stack">
+        <div class="box routine-box">
+            <h2 style="display:flex; justify-content:space-between; align-items:center;">
+                Checklist
+                <span style="font-size:1.6vh; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:4px;">
+                    Wear: <span id="todays-uniform" style="color:#fff;">...</span>
+                </span>
+            </h2>
+            <ul>
+                <li><span class="icon">💻</span> Charge Laptop</li>
+                <li><span class="icon">🍱</span> Pack Lunch</li>
+                <li><span class="icon">🦷</span> Brush Teeth</li>
+                <li><span class="icon">🎒</span> Pack Bag</li>
+                <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading...</span></li>
+            </ul>
+        </div>
+        <div class="box calendar-box">
+            <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+
 </div>
 
 <script>
