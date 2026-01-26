@@ -37,7 +37,7 @@
         /* MASTER GRID */
         .master-grid {
             display: grid;
-            /* CHANGED: Left (25%) | Middle (37.5%) | Right (37.5%) */
+            /* Left (25%) | Middle (37.5%) | Right (37.5%) */
             grid-template-columns: 25fr 37.5fr 37.5fr; 
             /* Row 1 (Header 18vh) | Row 2 (Rest of screen) */
             grid-template-rows: 18vh 1fr; 
@@ -74,7 +74,7 @@
         /* --- TOP ROW POSITIONS --- */
         .countdown-box { grid-column: 1; grid-row: 1; justify-content: center; text-align: center; }
         .time-box      { grid-column: 2; grid-row: 1; justify-content: center; text-align: center; }
-        .currency-box  { grid-column: 3; grid-row: 1; justify-content: center; text-align: center; }
+        .uniform-box   { grid-column: 3; grid-row: 1; justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
 
         /* --- BOTTOM ROW POSITIONS --- */
         .left-stack    { grid-column: 1; grid-row: 2; }
@@ -117,7 +117,9 @@
         .big-stat { font-size: 6vh; font-weight: 800; line-height: 1; color: #ffeb3b; }
         .sub-stat { font-size: 1.8vh; color: #ccc; }
         
-        #yen-rate { font-size: 6vh; color: #6fcf73; font-weight: 800; line-height: 1;}
+        /* Uniform Specifics */
+        .uniform-icon { font-size: 6vh; margin: 0; line-height: 1; }
+        #todays-uniform { font-size: 3vh; font-weight: bold; margin-top: 0.5vh; }
 
         /* List Styles */
         ul { list-style: none; padding: 0; margin: 0; }
@@ -157,10 +159,10 @@
         <div id="date">Loading...</div>
     </div>
 
-    <div class="box currency-box">
-        <h2 style="border:none; margin:0; font-size:1.8vh;">AUD to JPY</h2>
-        <div id="yen-rate">...</div>
-        <div class="sub-stat">1 AUD = ¥<span id="exact-rate">...</span></div>
+    <div class="box uniform-box">
+        <h2 style="border:none; margin:0; font-size:1.8vh; color:#aaa;">Wear Today</h2>
+        <div class="uniform-icon" id="uniform-icon">👔</div>
+        <div id="todays-uniform">Loading...</div>
     </div>
 
     <div class="stack-container left-stack">
@@ -187,12 +189,7 @@
 
     <div class="stack-container right-stack">
         <div class="box routine-box">
-            <h2 style="display:flex; justify-content:space-between; align-items:center;">
-                Checklist
-                <span style="font-size:1.6vh; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:4px;">
-                    Wear: <span id="todays-uniform" style="color:#fff;">...</span>
-                </span>
-            </h2>
+            <h2>Checklist</h2>
             <ul>
                 <li><span class="icon">💻</span> Charge Laptop</li>
                 <li><span class="icon">🍱</span> Pack Lunch</li>
@@ -260,6 +257,7 @@
                 <li style="text-align:center; font-size:2.5vh; opacity:0.7;">Relax & Recharge</li>
             `;
             document.getElementById("todays-uniform").textContent = "Casual";
+            document.getElementById("uniform-icon").textContent = "👕";
             document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
         } else {
             // NORMAL TERM
@@ -272,7 +270,19 @@
                 subjectList.appendChild(li);
             });
             document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
-            document.getElementById("todays-uniform").textContent = schoolUniforms[dayName] || "Casual";
+            
+            // UNIFORM LOGIC
+            const uniform = schoolUniforms[dayName] || "Casual";
+            document.getElementById("todays-uniform").textContent = uniform;
+            
+            const uniformIcon = document.getElementById("uniform-icon");
+            if(uniform.includes("Sport") || uniform.includes("PE")) {
+                uniformIcon.textContent = "👟"; 
+            } else if (uniform.includes("Formal")) {
+                uniformIcon.textContent = "👔"; 
+            } else {
+                uniformIcon.textContent = "👕"; 
+            }
         }
     }
 
@@ -300,21 +310,6 @@
         document.getElementById('countdown').innerText = days > 0 ? days : "Here!";
     }
     updateCountdown();
-
-    // CURRENCY
-    async function fetchRate() {
-        try {
-            const response = await fetch('https://api.frankfurter.app/latest?from=AUD&to=JPY');
-            const data = await response.json();
-            const rate = data.rates.JPY;
-            document.getElementById('yen-rate').innerText = "¥" + Math.floor(rate);
-            document.getElementById('exact-rate').innerText = rate.toFixed(2);
-        } catch (error) {
-            document.getElementById('yen-rate').innerText = "-";
-        }
-    }
-    fetchRate();
-    setInterval(fetchRate, 3600000); 
 
     // --- MLB LOGIC ---
     const openingDay = new Date("2026-03-26T00:00:00").getTime();
