@@ -71,29 +71,69 @@
             min-width: 0;
         }
 
-        /* --- TOP ROW POSITIONS --- */
-        .countdown-box { grid-column: 1; grid-row: 1; justify-content: center; text-align: center; }
-        .time-box      { grid-column: 2; grid-row: 1; justify-content: center; text-align: center; }
-        .uniform-box   { grid-column: 3; grid-row: 1; justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
+        /* --- GRID PLACEMENT --- */
 
-        /* --- BOTTOM ROW POSITIONS --- */
-        .left-stack    { grid-column: 1; grid-row: 2; }
-        .subjects-box  { grid-column: 2; grid-row: 2; background: rgba(0, 0, 0, 0.7); }
-        .right-stack   { grid-column: 3; grid-row: 2; }
+        /* 1. LEFT COLUMN (Spans Full Height) */
+        .left-stack { 
+            grid-column: 1; 
+            grid-row: 1 / span 2; /* Occupies Top AND Bottom */
+        }
 
-        /* --- WIDGET SIZING --- */
+        /* 2. MIDDLE COLUMN */
+        .time-box { 
+            grid-column: 2; 
+            grid-row: 1; 
+            justify-content: center; 
+            text-align: center; 
+        }
+        
+        .subjects-box { 
+            grid-column: 2; 
+            grid-row: 2; 
+            background: rgba(0, 0, 0, 0.7); 
+        }
+
+        /* 3. RIGHT COLUMN */
+        
+        /* Top Right Split Container (Uniform + Countdown) */
+        .header-right-split {
+            grid-column: 3;
+            grid-row: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Split equally */
+            gap: 2vh;
+        }
+
+        .right-stack { 
+            grid-column: 3; 
+            grid-row: 2; 
+        }
+
+        /* --- WIDGET SIZING & DETAILS --- */
+
+        /* Weather (Takes more height now) */
         .weather-box {
-            flex: 0 0 35%; 
+            flex: 1; /* Grows to fill available space */
             padding: 0; overflow: hidden;
         }
         .weather-box iframe {
             width: 100%; height: 100%; border: none;
-            transform: scale(1.1); transform-origin: top center;
+            /* Less scaling needed as box is bigger */
+            transform: scale(1.05); transform-origin: top center; 
         }
 
-        .mlb-box { flex: 1; overflow: hidden; }
-        .routine-box { flex: 0 0 auto; }
+        /* MLB (Fixed height at bottom of left col) */
+        .mlb-box { 
+            flex: 0 0 25vh; /* Fixed height for MLB */
+            overflow: hidden; 
+        }
 
+        /* Top Right Widgets */
+        .uniform-box   { justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
+        .countdown-box { justify-content: center; text-align: center; }
+
+        /* Checklist & Calendar */
+        .routine-box { flex: 0 0 auto; }
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -114,12 +154,12 @@
         #clock { font-size: 8vh; font-weight: 800; line-height: 0.9; letter-spacing: -2px; }
         #date { font-size: 2.2vh; color: rgba(255,255,255,0.8); }
         
-        .big-stat { font-size: 6vh; font-weight: 800; line-height: 1; color: #ffeb3b; }
-        .sub-stat { font-size: 1.8vh; color: #ccc; }
+        .big-stat { font-size: 5vh; font-weight: 800; line-height: 1; color: #ffeb3b; }
+        .sub-stat { font-size: 1.5vh; color: #ccc; }
         
         /* Uniform Specifics */
-        .uniform-icon { font-size: 6vh; margin: 0; line-height: 1; }
-        #todays-uniform { font-size: 3vh; font-weight: bold; margin-top: 0.5vh; }
+        .uniform-icon { font-size: 5vh; margin: 0; line-height: 1; }
+        #todays-uniform { font-size: 2.2vh; font-weight: bold; margin-top: 0.5vh; }
 
         /* List Styles */
         ul { list-style: none; padding: 0; margin: 0; }
@@ -148,23 +188,6 @@
 
 <div class="master-grid">
 
-    <div class="box countdown-box">
-        <h2 style="border:none; margin:0; font-size:1.8vh;">Japan Trip 🇯🇵</h2>
-        <div class="big-stat" id="countdown">0</div>
-        <div class="sub-stat">Days to go</div>
-    </div>
-
-    <div class="box time-box">
-        <div id="clock">--:--</div>
-        <div id="date">Loading...</div>
-    </div>
-
-    <div class="box uniform-box">
-        <h2 style="border:none; margin:0; font-size:1.8vh; color:#aaa;">Wear Today</h2>
-        <div class="uniform-icon" id="uniform-icon">👔</div>
-        <div id="todays-uniform">Loading...</div>
-    </div>
-
     <div class="stack-container left-stack">
         <div class="box weather-box">
             <iframe src="https://indify.co/widgets/live/weather/0UC6M14JlHPtKtLpox61"></iframe>
@@ -180,11 +203,29 @@
         </div>
     </div>
 
+    <div class="box time-box">
+        <div id="clock">--:--</div>
+        <div id="date">Loading...</div>
+    </div>
+    
     <div class="box subjects-box">
         <h2>Today's Subjects</h2>
         <ul id="subject-list">
             <li>Loading...</li>
         </ul>
+    </div>
+
+    <div class="header-right-split">
+        <div class="box uniform-box">
+            <h2 style="border:none; margin:0; font-size:1.5vh; color:#aaa;">Wear</h2>
+            <div class="uniform-icon" id="uniform-icon">👔</div>
+            <div id="todays-uniform">Loading...</div>
+        </div>
+        <div class="box countdown-box">
+            <h2 style="border:none; margin:0; font-size:1.5vh;">Japan 🇯🇵</h2>
+            <div class="big-stat" id="countdown">0</div>
+            <div class="sub-stat">Days</div>
+        </div>
     </div>
 
     <div class="stack-container right-stack">
@@ -271,7 +312,6 @@
             });
             document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
             
-            // UNIFORM LOGIC
             const uniform = schoolUniforms[dayName] || "Casual";
             document.getElementById("todays-uniform").textContent = uniform;
             
