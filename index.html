@@ -76,7 +76,7 @@
         /* 1. LEFT COLUMN (Spans Full Height) */
         .left-stack { 
             grid-column: 1; 
-            grid-row: 1 / span 2; /* Occupies Top AND Bottom */
+            grid-row: 1 / span 2; 
         }
 
         /* 2. MIDDLE COLUMN */
@@ -94,8 +94,6 @@
         }
 
         /* 3. RIGHT COLUMN */
-        
-        /* Top Right Split Container (Uniform + Countdown) */
         .header-right-split {
             grid-column: 3;
             grid-row: 1;
@@ -111,20 +109,19 @@
 
         /* --- WIDGET SIZING & DETAILS --- */
 
-        /* Weather (Takes more height now) */
+        /* Weather */
         .weather-box {
-            flex: 1; /* Grows to fill available space */
+            flex: 1; 
             padding: 0; overflow: hidden;
         }
         .weather-box iframe {
             width: 100%; height: 100%; border: none;
-            /* Less scaling needed as box is bigger */
             transform: scale(1.05); transform-origin: top center; 
         }
 
-        /* MLB (Fixed height at bottom of left col) */
+        /* MLB */
         .mlb-box { 
-            flex: 0 0 25vh; /* Fixed height for MLB */
+            flex: 0 0 25vh; 
             overflow: hidden; 
         }
 
@@ -132,8 +129,10 @@
         .uniform-box   { justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
         .countdown-box { justify-content: center; text-align: center; }
 
-        /* Checklist & Calendar */
+        /* Checklist */
         .routine-box { flex: 0 0 auto; }
+
+        /* Calendar */
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -157,13 +156,13 @@
         .big-stat { font-size: 5vh; font-weight: 800; line-height: 1; color: #ffeb3b; }
         .sub-stat { font-size: 1.5vh; color: #ccc; }
         
-        /* Uniform Specifics */
         .uniform-icon { font-size: 5vh; margin: 0; line-height: 1; }
         #todays-uniform { font-size: 2.2vh; font-weight: bold; margin-top: 0.5vh; }
 
         /* List Styles */
         ul { list-style: none; padding: 0; margin: 0; }
 
+        /* Subjects List */
         .subjects-box ul {
             display: flex; flex-direction: column;
             justify-content: space-evenly; height: 100%;
@@ -175,10 +174,30 @@
         }
         .subjects-box li:last-child { border-bottom: none; }
 
-        .routine-box ul { display: flex; flex-direction: column; gap: 1.5vh; }
-        .routine-box li { font-size: 2.2vh; display: flex; align-items: center; }
+        /* --- 2-COLUMN CHECKLIST STYLES --- */
+        .routine-box ul { 
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Columns */
+            gap: 1.5vh; 
+        }
+        .routine-box li { 
+            font-size: 2.2vh; 
+            display: flex; 
+            align-items: center; 
+        }
+        /* Icon styling */
         .icon { width: 4vh; text-align: center; margin-right: 1vw; font-size: 2.5vh; }
-        .daily-chore { color: #ffd700; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1vh; margin-top: 0.5vh; width: 100%; }
+        
+        /* Daily Chore spans full width */
+        .daily-chore { 
+            grid-column: span 2; 
+            color: #ffd700; 
+            font-weight: bold; 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            padding-top: 1vh; 
+            margin-top: 0.5vh; 
+            width: 100%; 
+        }
 
         #mlb-news li { font-size: 1.8vh; padding-bottom: 1vh; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0.8;}
 
@@ -232,7 +251,7 @@
         <div class="box routine-box">
             <h2>Checklist</h2>
             <ul>
-                <li><span class="icon">💻</span> Charge Laptop</li>
+                <li><span class="icon">💻</span> Charge PC</li>
                 <li><span class="icon">🍱</span> Pack Lunch</li>
                 <li><span class="icon">🦷</span> Brush Teeth</li>
                 <li><span class="icon">🎒</span> Pack Bag</li>
