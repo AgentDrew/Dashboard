@@ -123,8 +123,7 @@
         .uniform-box   { justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
         .countdown-box { justify-content: center; text-align: center; }
 
-        .routine-box { flex: 0 0 auto; }
-
+        /* Calendar now takes full height of its stack */
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -165,28 +164,6 @@
             padding: 0.5vh 0;
         }
         .subjects-box li:last-child { border-bottom: none; }
-
-        /* Checklist */
-        .routine-box ul { 
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 1.5vh; 
-        }
-        .routine-box li { 
-            font-size: 2.2vh; 
-            display: flex; 
-            align-items: center; 
-        }
-        .icon { width: 4vh; text-align: center; margin-right: 1vw; font-size: 2.5vh; }
-        .daily-chore { 
-            grid-column: span 2; 
-            color: #ffd700; 
-            font-weight: bold; 
-            border-top: 1px solid rgba(255,255,255,0.1); 
-            padding-top: 1vh; 
-            margin-top: 0.5vh; 
-            width: 100%; 
-        }
 
         #mlb-news li { font-size: 1.8vh; padding-bottom: 1vh; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0.8;}
 
@@ -237,16 +214,6 @@
     </div>
 
     <div class="stack-container right-stack">
-        <div class="box routine-box">
-            <h2 id="checklist-title">Checklist</h2>
-            <ul>
-                <li><span class="icon">💻</span> Charge PC</li>
-                <li><span class="icon">🍱</span> Pack Lunch</li>
-                <li><span class="icon">🦷</span> Brush Teeth</li>
-                <li><span class="icon">🎒</span> Pack Bag</li>
-                <li class="daily-chore"><span class="icon">⚠️</span> <span id="todays-chore">Loading...</span></li>
-            </ul>
-        </div>
         <div class="box calendar-box">
             <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Australia%2FBrisbane&showPrint=0&showTitle=0&showNav=0&showDate=0&showCalendars=0&mode=AGENDA&showTabs=0&showTz=0&src=MGNjZGFmNjE4OTFhZjI0NjgyMmM2Nzc0NTUyMjkyYjVhNjMxMjg5ZDA0ZWNjNjBkODZiMjc4MmNhNWRjZmU0OEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23009688" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
         </div>
@@ -270,18 +237,7 @@
         "Sunday": ["🎉 No School", "📝 Finish Homework", "🎒 Pack Bag"]
     };
 
-    // 2. CHORES
-    const dailyChores = {
-        "Monday": "Empty Dishwasher",
-        "Tuesday": "Take out Bins",
-        "Wednesday": "Walk the Dog",
-        "Thursday": "Clean Room",
-        "Friday": "Pack Sports Gear",
-        "Saturday": "Vacuum",
-        "Sunday": "Iron Uniforms"
-    };
-
-    // 3. UNIFORMS
+    // 2. UNIFORMS
     const schoolUniforms = {
         "Monday": "Sports PE",
         "Tuesday": "Formal Grey",
@@ -314,15 +270,12 @@
         if (isTomorrow) {
             document.getElementById("subjects-title").innerText = "Tomorrow's Subjects";
             document.getElementById("uniform-title").innerText = "Wear Tmrw";
-            document.getElementById("checklist-title").innerText = "Prep for Tmrw";
         } else {
             document.getElementById("subjects-title").innerText = "Today's Subjects";
             document.getElementById("uniform-title").innerText = "Wear Today";
-            document.getElementById("checklist-title").innerText = "Morning Checklist";
         }
 
         // HOLIDAY CHECK (Using the original school start date logic)
-        // Note: We check if the *displayDate* is before school starts
         if (displayDate < schoolStartDate) {
             document.getElementById("subject-list").innerHTML = `
                 <li style="text-align:center; color:#4fc3f7; font-size:8vh;">🎉</li>
@@ -331,7 +284,6 @@
             `;
             document.getElementById("todays-uniform").textContent = "Casual";
             document.getElementById("uniform-icon").textContent = "👕";
-            document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
         } else {
             // NORMAL TERM
             const subjects = schoolTimetable[dayName] || ["No School Data"];
@@ -342,7 +294,6 @@
                 li.textContent = subject;
                 subjectList.appendChild(li);
             });
-            document.getElementById("todays-chore").textContent = dailyChores[dayName] || "Check Calendar";
             
             const uniform = schoolUniforms[dayName] || "Casual";
             document.getElementById("todays-uniform").textContent = uniform;
