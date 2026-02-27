@@ -73,7 +73,7 @@
 
         /* --- GRID PLACEMENT --- */
 
-        /* 1. LEFT COLUMN (Spans Full Height) */
+        /* 1. LEFT COLUMN */
         .left-stack { 
             grid-column: 1; 
             grid-row: 1 / span 2; 
@@ -107,9 +107,8 @@
             grid-row: 2; 
         }
 
-        /* --- WIDGET SIZING & DETAILS --- */
+        /* --- WIDGET SIZING --- */
 
-        /* Weather */
         .weather-box {
             flex: 1; 
             padding: 0; overflow: hidden;
@@ -119,20 +118,13 @@
             transform: scale(1.05); transform-origin: top center; 
         }
 
-        /* MLB */
-        .mlb-box { 
-            flex: 0 0 25vh; 
-            overflow: hidden; 
-        }
-
-        /* Top Right Widgets */
+        .mlb-box { flex: 0 0 25vh; overflow: hidden; }
+        
         .uniform-box   { justify-content: center; text-align: center; background: rgba(40, 50, 60, 0.65); }
         .countdown-box { justify-content: center; text-align: center; }
 
-        /* Checklist */
         .routine-box { flex: 0 0 auto; }
 
-        /* Calendar */
         .calendar-box {
             flex: 1; 
             padding: 0;
@@ -159,10 +151,10 @@
         .uniform-icon { font-size: 5vh; margin: 0; line-height: 1; }
         #todays-uniform { font-size: 2.2vh; font-weight: bold; margin-top: 0.5vh; }
 
-        /* List Styles */
+        /* LIST STYLES */
         ul { list-style: none; padding: 0; margin: 0; }
 
-        /* Subjects List */
+        /* Subjects */
         .subjects-box ul {
             display: flex; flex-direction: column;
             justify-content: space-evenly; height: 100%;
@@ -174,10 +166,10 @@
         }
         .subjects-box li:last-child { border-bottom: none; }
 
-        /* --- 2-COLUMN CHECKLIST STYLES --- */
+        /* Checklist */
         .routine-box ul { 
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 Columns */
+            grid-template-columns: 1fr 1fr; 
             gap: 1.5vh; 
         }
         .routine-box li { 
@@ -185,10 +177,7 @@
             display: flex; 
             align-items: center; 
         }
-        /* Icon styling */
         .icon { width: 4vh; text-align: center; margin-right: 1vw; font-size: 2.5vh; }
-        
-        /* Daily Chore spans full width */
         .daily-chore { 
             grid-column: span 2; 
             color: #ffd700; 
@@ -228,28 +217,28 @@
     </div>
     
     <div class="box subjects-box">
-        <h2>Today's Subjects</h2>
+        <h2 id="subjects-title">Today's Subjects</h2>
         <ul id="subject-list">
             <li>Loading...</li>
         </ul>
     </div>
 
     <div class="header-right-split">
-        <div class="box uniform-box">
-            <h2 style="border:none; margin:0; font-size:1.5vh; color:#aaa;">Wear</h2>
-            <div class="uniform-icon" id="uniform-icon">👔</div>
-            <div id="todays-uniform">Loading...</div>
-        </div>
         <div class="box countdown-box">
             <h2 style="border:none; margin:0; font-size:1.5vh;">Japan 🇯🇵</h2>
             <div class="big-stat" id="countdown">0</div>
             <div class="sub-stat">Days</div>
         </div>
+        <div class="box uniform-box">
+            <h2 id="uniform-title" style="border:none; margin:0; font-size:1.5vh; color:#aaa;">Wear</h2>
+            <div class="uniform-icon" id="uniform-icon">👔</div>
+            <div id="todays-uniform">Loading...</div>
+        </div>
     </div>
 
     <div class="stack-container right-stack">
         <div class="box routine-box">
-            <h2>Checklist</h2>
+            <h2 id="checklist-title">Checklist</h2>
             <ul>
                 <li><span class="icon">💻</span> Charge PC</li>
                 <li><span class="icon">🍱</span> Pack Lunch</li>
@@ -307,10 +296,34 @@
 
     function updateSchoolData() {
         const now = new Date();
-        const dayName = daysOfWeek[now.getDay()];
+        const currentHour = now.getHours();
+        
+        // --- THE MIDDAY SWITCH LOGIC ---
+        let displayDate = new Date(now); 
+        let isTomorrow = false;
 
-        // HOLIDAY CHECK
-        if (now < schoolStartDate) {
+        // If it is 12:00 PM or later, switch to Tomorrow
+        if (currentHour >= 12) {
+            displayDate.setDate(now.getDate() + 1);
+            isTomorrow = true;
+        }
+
+        const dayName = daysOfWeek[displayDate.getDay()];
+
+        // Update Titles based on the switch
+        if (isTomorrow) {
+            document.getElementById("subjects-title").innerText = "Tomorrow's Subjects";
+            document.getElementById("uniform-title").innerText = "Wear Tmrw";
+            document.getElementById("checklist-title").innerText = "Prep for Tmrw";
+        } else {
+            document.getElementById("subjects-title").innerText = "Today's Subjects";
+            document.getElementById("uniform-title").innerText = "Wear Today";
+            document.getElementById("checklist-title").innerText = "Morning Checklist";
+        }
+
+        // HOLIDAY CHECK (Using the original school start date logic)
+        // Note: We check if the *displayDate* is before school starts
+        if (displayDate < schoolStartDate) {
             document.getElementById("subject-list").innerHTML = `
                 <li style="text-align:center; color:#4fc3f7; font-size:8vh;">🎉</li>
                 <li style="text-align:center;">Holiday Mode</li>
@@ -353,7 +366,8 @@
         document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'short', day: 'numeric'});
         
-        if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+        // Re-run the school data logic every minute to catch the 12:00 PM switch automatically
+        if(now.getSeconds() === 0) {
             updateSchoolData();
         }
     }
