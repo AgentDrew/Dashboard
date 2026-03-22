@@ -8,6 +8,7 @@
     <style>
         :root {
             --safe-margin: 2vw; 
+            --birthday-gold: #ffd700;
         }
 
         body {
@@ -167,9 +168,87 @@
 
         #mlb-news li { font-size: 1.8vh; padding-bottom: 1vh; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0.8;}
 
+        /* BIRTHDAY BANNER STYLES - ACROSS EVERYTHING */
+        #birthday-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            z-index: 9999; /* Ensure it is on top of EVERYTHING */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 20px solid var(--birthday-gold); /* Giant gold border frame */
+            box-sizing: border-box;
+            text-align: center;
+            animation: fadeInOverlay 1.5s ease-out forwards;
+        }
+
+        #birthday-overlay::before {
+            content: "🎉 🎂 🎁 🎈 🥳";
+            position: absolute;
+            top: 5vh;
+            font-size: 8vh;
+            animation: pulseIcons 2s infinite;
+        }
+
+        #birthday-overlay::after {
+            content: "🥳 🎈 🎁 🎂 🎉";
+            position: absolute;
+            bottom: 5vh;
+            font-size: 8vh;
+            animation: pulseIcons 2s infinite 1s;
+        }
+
+        .bday-main {
+            font-size: 14vh;
+            font-weight: 900;
+            margin: 0;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -5px;
+            line-height: 0.9;
+            text-shadow: 0 0 10px var(--birthday-gold), 0 0 20px var(--birthday-gold), 0 0 30px #ff4500;
+        }
+
+        .bday-sub {
+            font-size: 10vh;
+            margin: 2vh 0 0 0;
+            color: var(--birthday-gold);
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            animation: blink 0.5s step-end infinite;
+        }
+
+        .bday-icon {
+            font-size: 10vh;
+            margin-top: 2vh;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulseIcons {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
+
+<div id="birthday-overlay">
+    <div class="bday-main">HAPPY<br>BIRTHDAY</div>
+    <div class="bday-sub">YOU ARE 13 TODAY!</div>
+    <div class="bday-icon">TEENAGER MODE: ACTIVATED</div>
+</div>
 
 <div class="master-grid">
 
